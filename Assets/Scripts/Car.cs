@@ -243,7 +243,6 @@ public class Car : MonoBehaviour
     void UpdateDrag(Vector3 relativeVel)
     {
         Vector3 relativeDrag = -relativeVel;
-        //Vector3 drag = Vector3.Scale(dragMultiplier, relativeDrag);
         Vector3 drag = new Vector3(relativeDrag.x * relativeDrag.x * Sign(relativeDrag.x), //using the sqr of the relativeDrag, while retaining the sign
                                    relativeDrag.y * relativeDrag.y * Sign(relativeDrag.y),
                                    relativeDrag.z * relativeDrag.z * Sign(relativeDrag.z));
