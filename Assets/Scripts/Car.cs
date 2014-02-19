@@ -155,15 +155,15 @@ public class Car : MonoBehaviour
     //Update functions
     void GetInput()
     {
-        throttle = Input.GetAxis("Vertical");
-        steer = Input.GetAxis("Horizontal");
+        throttle = CInput.GetAxis("Vertical");
+        steer = CInput.GetAxis("Horizontal");
 
         CheckHandbrake();
     }
 
     void CheckHandbrake()
     {
-        if (Input.GetButton("Handbrake"))
+        if (CInput.GetKey("Brake"))
         {
             if (!handbrake)
             {
@@ -371,11 +371,6 @@ public class Car : MonoBehaviour
 
     int Sign(float f)
     {
-        if (f > 0)
-            return 1;
-        else if (f < 0)
-            return -1;
-        else
-            return 0;
+        return (f < 0 ? -1 : (f > 0 ? 1 : 0));
     }
 }

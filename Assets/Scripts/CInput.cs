@@ -4,20 +4,51 @@ using System.Collections.Generic;
 
 public class CInput : MonoBehaviour 
 {
-    public static Dictionary<string, KeyCode> keyBindings = new Dictionary<string, KeyCode>();
-
+    static Dictionary<string, KeyCode> keyBindings = new Dictionary<string, KeyCode>();
     static bool initialised;
+    static string[] keys = { "Up", "Down", "Left", "Right", "Brake", "Use Item", "Pause" };
+    static KeyCode[] defaultKeys = { KeyCode.W, KeyCode.S, KeyCode.A, KeyCode.D, KeyCode.Space, KeyCode.E, KeyCode.Escape };
+    static float lastHorTimeMark, lastVerTimeMark, horVal, verVal, speed = 3;
 
     static void Init()
     {
-        //use player prefs
+        if (PlayerPrefs.HasKey("Up")) //if playerprefs exists
+        {
+            foreach (string key in keys)
+                keyBindings.Add(key, (KeyCode)PlayerPrefs.GetInt(key));
+        }
+        else //creating default keybinds
+            Reset();
         initialised = true;
+    }
+
+    public static void ModifyKey(string name, KeyCode key)
+    {
+        if (keyBindings.ContainsKey(name))
+        {
+            keyBindings[name] = key;
+            PlayerPrefs.SetInt(name, (int)key);
+            PlayerPrefs.Save();
+        }
+        else
+            Debug.LogError("CInput: There is no such key \"" + name + "\"");
+    }
+
+    public static void Reset()
+    {
+        for (int i = 0; i < keys.Length; i++)
+        {
+            keyBindings.Add(keys[i], defaultKeys[i]);
+            PlayerPrefs.SetInt(keys[i], (int)defaultKeys[i]);
+        }
+        PlayerPrefs.Save();
     }
 
     public static bool GetKey(string name)
     {
         if (!initialised)
             Init();
+
         KeyCode keyCode;
         if(keyBindings.TryGetValue(name, out keyCode))
             return Input.GetKey(keyCode); 
@@ -28,6 +59,7 @@ public class CInput : MonoBehaviour
     {
         if (!initialised)
             Init();
+
         KeyCode keyCode;
         if (keyBindings.TryGetValue(name, out keyCode))
             return Input.GetKeyDown(keyCode);
@@ -38,9 +70,22 @@ public class CInput : MonoBehaviour
     {
         if (!initialised)
             Init();
+
         KeyCode keyCode;
         if (keyBindings.TryGetValue(name, out keyCode))
             return Input.GetKeyUp(keyCode);
         return false;
+    }
+
+    public static float GetAxis(string name)
+    {
+        if (!initialised)
+            Init();
+
+        if (name == "Horizontal")
+            return (GetKey("Left") ? -1 : 0) + (GetKey("Right") ? 1 : 0);
+        else if (name == "Vertical")
+            return (GetKey("Down") ? -1 : 0) + (GetKey("Up") ? 1 : 0);
+        return 0;
     }
 }
