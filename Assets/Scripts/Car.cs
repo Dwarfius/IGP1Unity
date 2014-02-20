@@ -28,10 +28,16 @@ public class Car : MonoBehaviour
     float handbrakeTimer, currentEnginePower, throttle;
     float handbrakeTime, steer, initialDragMultiplierX, resetTimer;
     bool handbrake, canDrive, canSteer;
+    bool inMenu;
     int currentGear;
+    Texture2D blackText;
 
 	void Start () 
     {
+        blackText = new Texture2D(1, 1);
+        blackText.SetPixel(0, 0, new Color(0, 0, 0, 0.5f));
+        blackText.Apply();
+
         wheels = new Wheel[frontWheels.Length + backWheels.Length];
 
         SetUpWheels();
@@ -65,6 +71,26 @@ public class Car : MonoBehaviour
         RotateWheels(relativeVel);
     }
 
+    void OnGUI()
+    {
+        if (!inMenu)
+            return;
+
+        GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), blackText);
+        float x = Screen.width / 2, y = Screen.height / 2;
+        float width = 125, height = 30, empty = 15;
+        if (GUI.Button(new Rect(x - width / 2, y, width, height), "Main Menu"))
+            Application.LoadLevel(0);
+
+        y += height + empty;
+        if (GUI.Button(new Rect(x - width / 2, y, width, height), "Back"))
+        {
+            Time.timeScale = 1;
+            inMenu = false;
+        }
+    }
+
+    //===========================================================================
     //start functions
     void SetUpWheels()
     {
@@ -155,6 +181,11 @@ public class Car : MonoBehaviour
     //Update functions
     void GetInput()
     {
+        if (CInput.GetKeyDown("Pause"))
+        {
+            inMenu = !inMenu;
+            Time.timeScale = (inMenu ? 0 : 1);
+        }
         throttle = CInput.GetAxis("Vertical");
         steer = CInput.GetAxis("Horizontal");
 

@@ -22,6 +22,13 @@ public class CInput : MonoBehaviour
         initialised = true;
     }
 
+    public static Dictionary<string, KeyCode> GetKeyBindings()
+    {
+        if (!initialised)
+            Init();
+        return keyBindings;
+    }
+
     public static void ModifyKey(string name, KeyCode key)
     {
         if (keyBindings.ContainsKey(name))
@@ -36,6 +43,7 @@ public class CInput : MonoBehaviour
 
     public static void Reset()
     {
+        keyBindings.Clear();
         for (int i = 0; i < keys.Length; i++)
         {
             keyBindings.Add(keys[i], defaultKeys[i]);
