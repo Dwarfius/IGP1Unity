@@ -8,7 +8,7 @@ public class CInput : MonoBehaviour
     static bool initialised;
     static string[] keys = { "Up", "Down", "Left", "Right", "Brake", "Use Item", "Pause" };
     static KeyCode[] defaultKeys = { KeyCode.W, KeyCode.S, KeyCode.A, KeyCode.D, KeyCode.Space, KeyCode.E, KeyCode.Escape };
-    static float lastHorTimeMark, lastVerTimeMark, horVal, verVal, speed = 3;
+    //static float lastHorTimeMark, lastVerTimeMark, horVal, verVal, speed = 3;
 
     static void Init()
     {

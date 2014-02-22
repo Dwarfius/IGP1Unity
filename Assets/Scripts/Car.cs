@@ -73,6 +73,8 @@ public class Car : MonoBehaviour
 
     void OnGUI()
     {
+        GUI.Label(new Rect(0, 0, 100, 50), "Speed: " + rigidbody.velocity.magnitude + "\nGear: " + currentGear);
+
         if (!inMenu)
             return;
 
@@ -251,8 +253,8 @@ public class Car : MonoBehaviour
     {
         currentGear = 0;
         for (int i = 0; i < gears - 1; i++)
-            if (relativeVel.z > gearSpeeds[i]) 
-                currentGear = i;
+            if (relativeVel.z > gearSpeeds[i])
+                currentGear = i+1;
     }
 
     //Fixed Update functions
