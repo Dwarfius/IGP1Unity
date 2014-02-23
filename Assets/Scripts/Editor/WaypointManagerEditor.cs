@@ -14,6 +14,7 @@ public class WaypointManagerEditor : Editor
         if (GUILayout.Button("Add Waypoint"))
         {
             GameObject obj = new GameObject("Waypoint"+root.GetChildCount());
+            obj.AddComponent<Waypoint>();
             obj.transform.parent = root;
         }
         if (GUILayout.Button("Update Waypoints"))
