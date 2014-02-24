@@ -25,14 +25,15 @@ public class Car : MonoBehaviour
 
     Wheel[] wheels;
     float[] engineForceValues, gearSpeeds;
-    float handbrakeTimer, currentEnginePower, throttle;
-    float handbrakeTime, steer, initialDragMultiplierX, resetTimer;
     bool handbrake, canDrive, canSteer;
     bool inMenu;
     int currentGear;
     Texture2D blackText;
 
-	void Start () 
+    protected float handbrakeTimer, currentEnginePower, throttle;
+    protected float handbrakeTime, steer, initialDragMultiplierX, resetTimer;
+
+	public virtual void Start () 
     {
         blackText = new Texture2D(1, 1);
         blackText.SetPixel(0, 0, new Color(0, 0, 0, 0.5f));
@@ -47,7 +48,7 @@ public class Car : MonoBehaviour
         initialDragMultiplierX = dragMultiplier.x;
 	}
 	
-	void Update () 
+	public virtual void Update () 
     {
         Vector3 relativeVelocity = transform.InverseTransformDirection(rigidbody.velocity);
         GetInput();
@@ -55,7 +56,7 @@ public class Car : MonoBehaviour
         UpdateGear(relativeVelocity);
 	}
 
-    void FixedUpdate()
+    public virtual void FixedUpdate()
     {
         // The rigidbody velocity is always given in world space, but in order to work in local space of the car model we need to transform it first.
 	    Vector3 relativeVel = transform.InverseTransformDirection(rigidbody.velocity);
@@ -71,7 +72,7 @@ public class Car : MonoBehaviour
         RotateWheels(relativeVel);
     }
 
-    void OnGUI()
+    public virtual void OnGUI()
     {
         GUI.Label(new Rect(0, 0, 100, 50), "Speed: " + rigidbody.velocity.magnitude + "\nGear: " + currentGear);
 
@@ -180,6 +181,7 @@ public class Car : MonoBehaviour
         }
     }
 
+    //===========================================================================
     //Update functions
     void GetInput()
     {
@@ -228,7 +230,7 @@ public class Car : MonoBehaviour
         handbrakeTimer = 0;
     }
 
-    void CheckIfFlipped()
+    protected void CheckIfFlipped()
     {
         if (transform.localEulerAngles.z > 80 && transform.localEulerAngles.z < 280)
             resetTimer += Time.deltaTime;
@@ -249,7 +251,7 @@ public class Car : MonoBehaviour
 	    currentEnginePower = 0;
     }
 
-    void UpdateGear(Vector3 relativeVel)
+    protected void UpdateGear(Vector3 relativeVel)
     {
         currentGear = 0;
         for (int i = 0; i < gears - 1; i++)
@@ -257,6 +259,7 @@ public class Car : MonoBehaviour
                 currentGear = i+1;
     }
 
+    //===========================================================================
     //Fixed Update functions
     void CalculateState()
     {
