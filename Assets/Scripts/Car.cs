@@ -4,7 +4,7 @@ using System.Collections;
 [RequireComponent(typeof(Rigidbody))]
 public class Car : MonoBehaviour 
 {
-    WheelFrictionCurve curve;
+    WheelFrictionCurve forwardCurve, sidewaysCurve;
 
     public class Wheel
     {
@@ -83,7 +83,10 @@ public class Car : MonoBehaviour
         float x = Screen.width / 2, y = Screen.height / 2;
         float width = 125, height = 30, empty = 15;
         if (GUI.Button(new Rect(x - width / 2, y, width, height), "Main Menu"))
+        {
+            Time.timeScale = 1;
             Application.LoadLevel(0);
+        }
 
         y += height + empty;
         if (GUI.Button(new Rect(x - width / 2, y, width, height), "Back"))
@@ -108,12 +111,19 @@ public class Car : MonoBehaviour
 
     void SetupWheelFrictionCurve()
     {
-        curve = new WheelFrictionCurve();
-        curve.extremumSlip = 1;
-        curve.extremumValue = 50;
-        curve.asymptoteSlip = 2;
-        curve.asymptoteValue = 25;
-        curve.stiffness = 1;
+        forwardCurve = new WheelFrictionCurve();
+        forwardCurve.extremumSlip = 1;
+        forwardCurve.extremumValue = 50;
+        forwardCurve.asymptoteSlip = 2;
+        forwardCurve.asymptoteValue = 25;
+        forwardCurve.stiffness = 1;
+
+        sidewaysCurve = new WheelFrictionCurve();
+        sidewaysCurve.extremumSlip = 1;
+        sidewaysCurve.extremumValue = 50;
+        sidewaysCurve.asymptoteSlip = 2;
+        sidewaysCurve.asymptoteValue = 25;
+        sidewaysCurve.stiffness = 1.5f;
     }
 
     Wheel SetUpWheel(Transform wheelTransform, bool isFront)
@@ -132,7 +142,8 @@ public class Car : MonoBehaviour
 
         Wheel wheel = new Wheel();
         wheel.col = wc;
-        wc.sidewaysFriction = curve;
+        wc.forwardFriction = forwardCurve;
+        wc.sidewaysFriction = sidewaysCurve;
         wheel.wheelGraphic = wheelTransform;
         wheel.col.radius = wheelTransform.renderer.bounds.size.y / 2;
 
@@ -297,16 +308,17 @@ public class Car : MonoBehaviour
         rigidbody.AddForce(transform.TransformDirection(drag) * rigidbody.mass * Time.deltaTime);
     }
 
-    void UpdateFriction(Vector3 relativeVel)
+    void UpdateFriction(Vector3 relativeVel) //change the sideways friction
     {
         float sqrVel = relativeVel.x * relativeVel.x;
-        curve.extremumValue = Mathf.Clamp(300 - sqrVel, 0, 300);
-        curve.asymptoteValue = Mathf.Clamp(150 - (sqrVel / 2), 0, 150);
+        forwardCurve.extremumValue = Mathf.Clamp(300 - sqrVel, 0, 300);
+        forwardCurve.asymptoteValue = Mathf.Clamp(150 - (sqrVel / 2), 0, 150);
+        sidewaysCurve.stiffness = relativeVel.magnitude / topSpeed + 1.5f; //it's kind of cheating, but f it :D
 
         foreach (Wheel wheel in wheels)
         {
-            wheel.col.sidewaysFriction = curve;
-            wheel.col.forwardFriction = curve;
+            wheel.col.sidewaysFriction = sidewaysCurve;
+            wheel.col.forwardFriction = forwardCurve;
         }
     }
 
@@ -352,16 +364,19 @@ public class Car : MonoBehaviour
 
     void ApplySteering(Vector3 relativeVel)
     {
-        float turnRadius = 3 / Mathf.Sin(((90 - steer * 30) * Mathf.Deg2Rad));
+        /*float turnRadius = 3 / Mathf.Sin(((90 - steer * 30) * Mathf.Deg2Rad));
         float minMaxTurn = EvaluateSpeedToTurn(rigidbody.velocity.magnitude);
-        float turnSpeed = Mathf.Clamp(relativeVel.z / turnRadius, -minMaxTurn / 10, minMaxTurn / 10);
+        float turnSpeed = Mathf.Clamp(relativeVel.z / turnRadius, -minMaxTurn, minMaxTurn);
 
-        transform.RotateAround(transform.position + transform.right * turnRadius * steer, transform.up, turnSpeed * steer * Mathf.Deg2Rad * Time.deltaTime * 1000);
+        transform.RotateAround(transform.position + transform.right * turnRadius * steer, transform.up, turnSpeed * steer * Mathf.Deg2Rad * Time.deltaTime * 1000);*/
+
         //depending on the steeering, rotate the tire column
+        float turn = EvaluateSpeedToTurn(rigidbody.velocity.magnitude);
         foreach(Wheel w in wheels)
         {
             if (w.steerWheel)
             {
+                w.col.steerAngle = turn * steer;
                 Vector3 angle = w.wheelGraphic.localEulerAngles;
                 angle.y = steer * 15;
                 w.wheelGraphic.localEulerAngles = angle;
@@ -394,7 +409,7 @@ public class Car : MonoBehaviour
         return minimumTurn + speedIndex * (maximumTurn - minimumTurn);
     }
 
-    void RotateWheels(Vector3 relativeVel)
+    void RotateWheels(Vector3 relativeVel) //throttle rotation
     {
         float speed = relativeVel.magnitude;
         foreach (Wheel w in wheels)

@@ -7,6 +7,7 @@ public class MainMenu : MonoBehaviour
     enum State { MainMenu, Options, LevelSelect, KartSelect }
 
     public Vector3 btnSize; //z contains the empty space
+    public GameObject[] karts;
 
     State state = State.MainMenu;
     Dictionary<string, KeyCode> keyBinds;
@@ -37,7 +38,7 @@ public class MainMenu : MonoBehaviour
     {
         float x = Screen.width / 2, y = Screen.height / 2;
         if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Play The Game"))
-            Application.LoadLevel(1);//state = State.LevelSelect;
+            state = State.LevelSelect;
 
         y += btnSize.y + btnSize.z;
         if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Options"))
@@ -83,11 +84,23 @@ public class MainMenu : MonoBehaviour
 
     void DrawLevelSelect()
     {
+        float x = Screen.width / 2, y = Screen.height / 10;
+        if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Select Kart"))
+            state = State.KartSelect;
 
+        y += btnSize.y + btnSize.z;
+        if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Back"))
+            state = State.MainMenu;
     }
 
     void DrawKartSelect()
     {
+        float x = Screen.width / 2, y = Screen.height / 10;
+        if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Play"))
+            Application.LoadLevel(1);
 
+        y += btnSize.y + btnSize.z;
+        if (GUI.Button(new Rect(x - btnSize.x/2, y, btnSize.x, btnSize.y), "Back"))
+            state = State.LevelSelect;
     }
 }
