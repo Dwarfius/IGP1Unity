@@ -38,8 +38,8 @@ public class SteeringAI : Car
         Color color;
         if ((projectedPos.ToV2() - newPoint).sqrMagnitude > rad * rad)
         {
-            //float dist = (projectedPos.ToV2() - newPoint).magnitude;
-            throttle = 0;//(1 / (dist - rad)) * 0.5f;
+            float dist = (projectedPos.ToV2() - newPoint).magnitude;
+            throttle = 0;// (1 / (dist - rad)) * 0.05f;
             steer = currentSegm.IsLeft(projectedPos.ToV2());
             color = Color.red;
         }
