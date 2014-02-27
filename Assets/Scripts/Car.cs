@@ -23,14 +23,14 @@ public class Car : MonoBehaviour
     public Transform centerOfMass;
     public Vector3 dragMultiplier = new Vector3(2, 5, 1);
 
-    Wheel[] wheels;
+    protected Wheel[] wheels;
     float[] engineForceValues, gearSpeeds;
     bool handbrake, canDrive, canSteer;
     bool inMenu;
     int currentGear;
     Texture2D blackText;
 
-    protected float handbrakeTimer, currentEnginePower, throttle;
+    protected float currentEnginePower, throttle;
     protected float handbrakeTime, steer, initialDragMultiplierX, resetTimer;
 
 	public virtual void Start () 
@@ -54,6 +54,7 @@ public class Car : MonoBehaviour
         GetInput();
         CheckIfFlipped();
         UpdateGear(relativeVelocity);
+        
 	}
 
     public virtual void FixedUpdate()
@@ -76,24 +77,8 @@ public class Car : MonoBehaviour
     {
         GUI.Label(new Rect(0, 0, 100, 50), "Speed: " + rigidbody.velocity.magnitude + "\nGear: " + currentGear);
 
-        if (!inMenu)
-            return;
-
-        GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), blackText);
-        float x = Screen.width / 2, y = Screen.height / 2;
-        float width = 125, height = 30, empty = 15;
-        if (GUI.Button(new Rect(x - width / 2, y, width, height), "Main Menu"))
-        {
-            Time.timeScale = 1;
-            Application.LoadLevel(0);
-        }
-
-        y += height + empty;
-        if (GUI.Button(new Rect(x - width / 2, y, width, height), "Back"))
-        {
-            Time.timeScale = 1;
-            inMenu = false;
-        }
+        if(inMenu)
+            DrawMenu();
     }
 
     //===========================================================================
@@ -228,17 +213,16 @@ public class Car : MonoBehaviour
     IEnumerator StopHandbraking(float seconds)
     {
         float diff = initialDragMultiplierX - dragMultiplier.x;
-        handbrakeTimer = 1;
+        float handbrakeTimer = 1;
 
         while (dragMultiplier.x < initialDragMultiplierX && !handbrake)
         {
-            dragMultiplier.x += diff * (Time.deltaTime / seconds);
+            dragMultiplier.x += diff * handbrakeTimer; //(Time.deltaTime / seconds)
             handbrakeTimer -= Time.fixedDeltaTime / seconds;
             yield return new WaitForFixedUpdate();
         }
 
         dragMultiplier.x = initialDragMultiplierX;
-        handbrakeTimer = 0;
     }
 
     protected void CheckIfFlipped()
@@ -342,10 +326,7 @@ public class Car : MonoBehaviour
 
     float EvaluateNormPower(float normPower)
     {
-        if (normPower < 1)
-            return 10 - normPower * 9;
-        else
-            return 1.9f - normPower * 0.9f;
+        return (normPower < 1 ? 10 - normPower * 9 : 1.9f - normPower * 0.9f);
     }
 
     void ApplyThrottle(Vector3 relativeVel)
@@ -364,12 +345,6 @@ public class Car : MonoBehaviour
 
     void ApplySteering(Vector3 relativeVel)
     {
-        /*float turnRadius = 3 / Mathf.Sin(((90 - steer * 30) * Mathf.Deg2Rad));
-        float minMaxTurn = EvaluateSpeedToTurn(rigidbody.velocity.magnitude);
-        float turnSpeed = Mathf.Clamp(relativeVel.z / turnRadius, -minMaxTurn, minMaxTurn);
-
-        transform.RotateAround(transform.position + transform.right * turnRadius * steer, transform.up, turnSpeed * steer * Mathf.Deg2Rad * Time.deltaTime * 1000);*/
-
         //depending on the steeering, rotate the tire column
         float turn = EvaluateSpeedToTurn(rigidbody.velocity.magnitude);
         foreach(Wheel w in wheels)
@@ -409,7 +384,7 @@ public class Car : MonoBehaviour
         return minimumTurn + speedIndex * (maximumTurn - minimumTurn);
     }
 
-    void RotateWheels(Vector3 relativeVel) //throttle rotation
+    void RotateWheels(Vector3 relativeVel) //throttle rotation, rolling
     {
         float speed = relativeVel.magnitude;
         foreach (Wheel w in wheels)
@@ -420,6 +395,29 @@ public class Car : MonoBehaviour
         }
     }
 
+    //===========================================================================
+    //OnGUI methods
+    void DrawMenu()
+    {
+        GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), blackText);
+        float x = Screen.width / 2, y = Screen.height / 2;
+        float width = 125, height = 30, empty = 15;
+        if (GUI.Button(new Rect(x - width / 2, y, width, height), "Main Menu"))
+        {
+            Time.timeScale = 1;
+            Application.LoadLevel(0);
+        }
+
+        y += height + empty;
+        if (GUI.Button(new Rect(x - width / 2, y, width, height), "Back"))
+        {
+            Time.timeScale = 1;
+            inMenu = false;
+        }
+    }
+
+    //===========================================================================
+    //Utility methods
     int Sign(float f)
     {
         return (f < 0 ? -1 : (f > 0 ? 1 : 0));

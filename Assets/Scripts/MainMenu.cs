@@ -72,16 +72,6 @@ public class MainMenu : MonoBehaviour
             state = State.MainMenu;
     }
 
-    void SetKeyBind()
-    {
-        Event e = Event.current;
-        if (e.isKey && e.type == EventType.keyDown)
-        {
-            CInput.ModifyKey(editingKey, e.keyCode);
-            editingKey = null;
-        }
-    }
-
     void DrawLevelSelect()
     {
         float x = Screen.width / 2, y = Screen.height / 10;
@@ -102,5 +92,15 @@ public class MainMenu : MonoBehaviour
         y += btnSize.y + btnSize.z;
         if (GUI.Button(new Rect(x - btnSize.x/2, y, btnSize.x, btnSize.y), "Back"))
             state = State.LevelSelect;
+    }
+
+    void SetKeyBind()
+    {
+        Event e = Event.current;
+        if (e.isKey && e.type == EventType.keyDown)
+        {
+            CInput.ModifyKey(editingKey, e.keyCode);
+            editingKey = null;
+        }
     }
 }

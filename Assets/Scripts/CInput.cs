@@ -7,8 +7,7 @@ public class CInput : MonoBehaviour
     static Dictionary<string, KeyCode> keyBindings = new Dictionary<string, KeyCode>();
     static bool initialised;
     static string[] keys = { "Up", "Down", "Left", "Right", "Brake", "Use Item", "Pause" };
-    static KeyCode[] defaultKeys = { KeyCode.W, KeyCode.S, KeyCode.A, KeyCode.D, KeyCode.Space, KeyCode.E, KeyCode.Escape };
-    //static float lastHorTimeMark, lastVerTimeMark, horVal, verVal, speed = 3;
+    static KeyCode[] defaultHotKeys = { KeyCode.W, KeyCode.S, KeyCode.A, KeyCode.D, KeyCode.Space, KeyCode.E, KeyCode.Escape };
 
     static void Init()
     {
@@ -46,8 +45,8 @@ public class CInput : MonoBehaviour
         keyBindings.Clear();
         for (int i = 0; i < keys.Length; i++)
         {
-            keyBindings.Add(keys[i], defaultKeys[i]);
-            PlayerPrefs.SetInt(keys[i], (int)defaultKeys[i]);
+            keyBindings.Add(keys[i], defaultHotKeys[i]);
+            PlayerPrefs.SetInt(keys[i], (int)defaultHotKeys[i]);
         }
         PlayerPrefs.Save();
     }
