@@ -98,16 +98,16 @@ public class Car : MonoBehaviour
     {
         forwardCurve = new WheelFrictionCurve();
         forwardCurve.extremumSlip = 1;
-        forwardCurve.extremumValue = 20000;
+        forwardCurve.extremumValue = 50;
         forwardCurve.asymptoteSlip = 2;
-        forwardCurve.asymptoteValue = 10000;
+        forwardCurve.asymptoteValue = 25;
         forwardCurve.stiffness = 1;
 
         sidewaysCurve = new WheelFrictionCurve();
         sidewaysCurve.extremumSlip = 1;
-        sidewaysCurve.extremumValue = 20000;
+        sidewaysCurve.extremumValue = 50;
         sidewaysCurve.asymptoteSlip = 2;
-        sidewaysCurve.asymptoteValue = 10000;
+        sidewaysCurve.asymptoteValue = 25;
         sidewaysCurve.stiffness = 1.5f;
     }
 
@@ -295,9 +295,8 @@ public class Car : MonoBehaviour
     void UpdateFriction(Vector3 relativeVel) //change the sideways friction
     {
         float sqrVel = relativeVel.x * relativeVel.x;
-        /*sidewaysCurve.extremumValue = forwardCurve.extremumValue = Mathf.Clamp(300 - sqrVel, 0, 300);
-        sidewaysCurve.asymptoteValue = forwardCurve.asymptoteValue = Mathf.Clamp(150 - (sqrVel / 2), 0, 150);*/
-        
+        forwardCurve.extremumValue = Mathf.Clamp(300 - sqrVel, 0, 300);
+        forwardCurve.asymptoteValue = Mathf.Clamp(150 - (sqrVel / 2), 0, 150);
         sidewaysCurve.stiffness = relativeVel.magnitude / topSpeed + 1.5f; //it's kind of cheating, but f it :D
 
         foreach (Wheel wheel in wheels)
