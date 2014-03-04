@@ -15,7 +15,7 @@ public class Car : MonoBehaviour
     }
 
     public Transform[] frontWheels, backWheels;
-    public float antiRoll = 5000;
+    public float slipValue = 300;
     public int gears = 5;
     public float topSpeed = 160, suspensionRange = 0.1f, suspensionDamper = 50;
     public float maximumTurn = 15, minimumTurn = 10, resetTime = 3;
@@ -72,7 +72,6 @@ public class Car : MonoBehaviour
         if (canSteer)
             ApplySteering(relativeVel);
         RotateWheels(relativeVel);
-        ApplyAntiRollForce();
     }
 
     public virtual void OnGUI()
@@ -100,17 +99,13 @@ public class Car : MonoBehaviour
     {
         forwardCurve = new WheelFrictionCurve();
         forwardCurve.extremumSlip = 1;
-        forwardCurve.extremumValue = 50;
         forwardCurve.asymptoteSlip = 2;
-        forwardCurve.asymptoteValue = 25;
         forwardCurve.stiffness = 1;
 
         sidewaysCurve = new WheelFrictionCurve();
         sidewaysCurve.extremumSlip = 1;
-        sidewaysCurve.extremumValue = 50;
         sidewaysCurve.asymptoteSlip = 2;
-        sidewaysCurve.asymptoteValue = 25;
-        sidewaysCurve.stiffness = 1.5f;
+        sidewaysCurve.stiffness = 1;
     }
 
     Wheel SetUpWheel(Transform wheelTransform, bool isFront)
@@ -296,10 +291,15 @@ public class Car : MonoBehaviour
 
     void UpdateFriction(Vector3 relativeVel) //change the sideways friction
     {
-        float sqrVel = relativeVel.x * relativeVel.x;
-        forwardCurve.extremumValue = Mathf.Clamp(300 - sqrVel, 0, 300);
-        forwardCurve.asymptoteValue = Mathf.Clamp(150 - (sqrVel / 2), 0, 150);
-        sidewaysCurve.stiffness = relativeVel.magnitude / topSpeed + 1.5f; //it's kind of cheating, but f it :D
+        /*float sqrVel = relativeVel.x * relativeVel.x;
+        sidewaysCurve.extremumValue = forwardCurve.extremumValue = Mathf.Clamp(slipValue - sqrVel, 0, slipValue);
+        sidewaysCurve.asymptoteValue = forwardCurve.asymptoteValue = Mathf.Clamp(slipValue / 2 - (sqrVel / 2), 0, slipValue / 2);*/
+
+        float coeff = Mathf.Abs(relativeVel.normalized.x);
+        sidewaysCurve.extremumValue = forwardCurve.extremumValue = slipValue - slipValue * 0.9f * coeff;
+        sidewaysCurve.asymptoteValue = forwardCurve.asymptoteValue = slipValue/2 - slipValue * 0.45f * coeff;
+
+        sidewaysCurve.stiffness = 1 - 0.6f * relativeVel.magnitude / topSpeed; //it's kind of cheating, but f it :D
 
         foreach (Wheel wheel in wheels)
         {
@@ -379,10 +379,7 @@ public class Car : MonoBehaviour
 
     float EvaluateSpeedToTurn(float speed)
     {
-        if (speed > topSpeed / 2)
-            return minimumTurn;
-
-        float speedIndex = 1 - (speed * 2/ topSpeed);
+        float speedIndex = 1 - (speed / topSpeed);
         return minimumTurn + speedIndex * (maximumTurn - minimumTurn);
     }
 
@@ -394,32 +391,6 @@ public class Car : MonoBehaviour
             float L = w.col.radius * 2 * Mathf.PI;
             float percent = speed / L;
             w.wheelGraphic.Rotate(w.wheelGraphic.right, percent * 360 * Time.deltaTime, Space.World);
-        }
-    }
-
-    void ApplyAntiRollForce()
-    {
-        WheelHit hit;
-        for (int i = 0; i < 2; i++)
-        {
-            float lCoef = 1;
-            float rCoef = 1;
-
-            bool onGroundL = wheels[i].col.GetGroundHit(out hit);
-            if (onGroundL)
-                lCoef = (wheels[i].col.radius - wheels[i].col.transform.InverseTransformPoint(hit.point).y) / wheels[i].col.suspensionDistance;
-
-            bool onGroundR = wheels[i + 1].col.GetGroundHit(out hit);
-            if (onGroundR)
-                rCoef = (wheels[i + 1].col.radius - wheels[i + 1].col.transform.InverseTransformPoint(hit.point).y) / wheels[i].col.suspensionDistance;
-
-            float antiRollForce = (lCoef - rCoef) * antiRoll;
-
-            if (onGroundL)
-                rigidbody.AddForceAtPosition(wheels[i].col.transform.up * -antiRollForce, wheels[i].col.transform.position);
-
-            if (onGroundR)
-                rigidbody.AddForceAtPosition(wheels[i + 1].col.transform.up * antiRollForce, wheels[i + 1].col.transform.position);
         }
     }
 
