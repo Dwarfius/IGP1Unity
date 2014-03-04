@@ -15,6 +15,7 @@ public class Car : MonoBehaviour
     }
 
     public Transform[] frontWheels, backWheels;
+    public float antiRoll = 5000;
     public int gears = 5;
     public float topSpeed = 160, suspensionRange = 0.1f, suspensionDamper = 50;
     public float maximumTurn = 15, minimumTurn = 10, resetTime = 3;
@@ -71,6 +72,7 @@ public class Car : MonoBehaviour
         if (canSteer)
             ApplySteering(relativeVel);
         RotateWheels(relativeVel);
+        ApplyAntiRollForce();
     }
 
     public virtual void OnGUI()
@@ -392,6 +394,32 @@ public class Car : MonoBehaviour
             float L = w.col.radius * 2 * Mathf.PI;
             float percent = speed / L;
             w.wheelGraphic.Rotate(w.wheelGraphic.right, percent * 360 * Time.deltaTime, Space.World);
+        }
+    }
+
+    void ApplyAntiRollForce()
+    {
+        WheelHit hit;
+        for (int i = 0; i < 2; i++)
+        {
+            float lCoef = 1;
+            float rCoef = 1;
+
+            bool onGroundL = wheels[i].col.GetGroundHit(out hit);
+            if (onGroundL)
+                lCoef = (wheels[i].col.radius - wheels[i].col.transform.InverseTransformPoint(hit.point).y) / wheels[i].col.suspensionDistance;
+
+            bool onGroundR = wheels[i + 1].col.GetGroundHit(out hit);
+            if (onGroundR)
+                rCoef = (wheels[i + 1].col.radius - wheels[i + 1].col.transform.InverseTransformPoint(hit.point).y) / wheels[i].col.suspensionDistance;
+
+            float antiRollForce = (lCoef - rCoef) * antiRoll;
+
+            if (onGroundL)
+                rigidbody.AddForceAtPosition(wheels[i].col.transform.up * -antiRollForce, wheels[i].col.transform.position);
+
+            if (onGroundR)
+                rigidbody.AddForceAtPosition(wheels[i + 1].col.transform.up * antiRollForce, wheels[i + 1].col.transform.position);
         }
     }
 
