@@ -17,4 +17,9 @@ public static class Utilities
     {
         return new Vector3(v.x, 0, v.y);
     }
+
+    public static Vector3 Lerp(Vector3 from, Vector3 to, float t)
+    {
+        return new Vector3(Mathf.Lerp(from.x, to.x, t), Mathf.Lerp(from.y, to.y, t), Mathf.Lerp(from.z, to.z, t));
+    }
 }

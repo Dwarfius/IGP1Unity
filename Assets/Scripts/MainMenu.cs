@@ -4,18 +4,65 @@ using System.Collections.Generic;
 
 public class MainMenu : MonoBehaviour 
 {
+    #region CarStorage
+    [System.Serializable]
+    public class CarStorage
+    {
+        public GameObject carDriverPair;
+        public string name;
+
+        [HideInInspector] public Transform carTransform;
+    }
+    #endregion
     enum State { MainMenu, Options, LevelSelect, KartSelect }
 
     public Vector3 btnSize; //z contains the empty space
-    public GameObject[] karts;
+    public CarStorage[] cars;
+    public Vector3[] carPositions;
+    public float rotationTime;
 
+    int selectedCar = 0, switchFlag;
     State state = State.MainMenu;
     Dictionary<string, KeyCode> keyBinds;
     string editingKey = null;
+    float counter = 0;
 
     void Start()
     {
         keyBinds = CInput.GetKeyBindings();
+        for (int i = 0; i < carPositions.Length; i++)
+            cars[i].carTransform = ((GameObject)Instantiate(cars[i].carDriverPair, carPositions[i], Quaternion.identity)).transform;
+    }
+
+    void Update()
+    {
+        if (CInput.GetKeyDown("Right"))
+        {
+            switchFlag = 1;
+            if (++selectedCar == cars.Length)
+                selectedCar = 0;
+        }
+        else if (CInput.GetKeyDown("Left"))
+        {
+            switchFlag = -1;
+            if (--selectedCar == -1)
+                selectedCar = cars.Length - 1;
+        }
+
+        if (switchFlag != 0)
+        {
+            if ((counter += Time.deltaTime / rotationTime) < 1)
+            {
+                /*cars[selectedCar].carTransform.position = Utilities.Lerp(carPositions[switchFlag == 1 ? 0 : 2], carPositions[1], counter);
+                cars[selectedCar+1].carTransform.position = Utilities.Lerp(carPositions[1], carPositions[switchFlag == 1 ? 2 : 1], counter);
+                cars[selectedCar-1].carTransform.position = Utilities.Lerp(carPositions[switchFlag == 1 ? 0 : 2], carPositions[1], counter);*/
+            }
+            else
+            {
+                counter = 0;
+                switchFlag = 0;
+            }
+        }
     }
 
     void OnGUI()
@@ -86,12 +133,33 @@ public class MainMenu : MonoBehaviour
     void DrawKartSelect()
     {
         float x = Screen.width / 2, y = Screen.height / 10;
+
+        if (GUI.Button(new Rect(x, y, btnSize.x, btnSize.y), "Next"))
+        {
+            if (++selectedCar == cars.Length) 
+                selectedCar = 0;
+            switchFlag = 1;
+        }
+        else if (GUI.Button(new Rect(x - btnSize.x - btnSize.z, y, btnSize.x, btnSize.y), "Prev"))
+        {
+            if (--selectedCar == -1)
+                selectedCar = cars.Length - 1;
+            switchFlag = -1;
+        }
+
+        y += btnSize.y + btnSize.z;
         if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Play"))
             Application.LoadLevel(1);
 
         y += btnSize.y + btnSize.z;
         if (GUI.Button(new Rect(x - btnSize.x/2, y, btnSize.x, btnSize.y), "Back"))
             state = State.LevelSelect;
+    }
+
+    void OnDrawGizmos()
+    {
+        for (int i = 0; i < carPositions.Length; i++)
+            Gizmos.DrawCube(carPositions[i], Vector3.one);
     }
 
     void SetKeyBind()
