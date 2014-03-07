@@ -17,5 +17,7 @@ public class WaypointManagerEditor : Editor
         }
         if (GUILayout.Button("Update Waypoints"))
             (target as WaypointManager).UpdateWaypoints();
+        if (GUILayout.Button("Cast To Ground"))
+            (target as WaypointManager).CastToGround();
     }
 }

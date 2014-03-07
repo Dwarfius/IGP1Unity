@@ -41,4 +41,14 @@ public class WaypointManager : MonoBehaviour
     {
         return new Line(waypoints[segmNum], (segmNum + 1 == waypoints.Length ? waypoints[0] : waypoints[segmNum + 1]));
     }
+
+    public void CastToGround()
+    {
+        RaycastHit hit;
+        foreach (Transform waypoint in waypoints)
+        {
+            if (Physics.Raycast(waypoint.position, Vector3.down, out hit))
+                waypoint.position = hit.point + Vector3.up;
+        }
+    }
 }
