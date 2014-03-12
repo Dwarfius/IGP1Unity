@@ -14,12 +14,13 @@ public class MainMenu : MonoBehaviour
         [HideInInspector] public Transform carTransform;
     }
     #endregion
-    enum State { MainMenu, Options, LevelSelect, KartSelect }
+    enum State { MainMenu, Options, KartSelect }
 
     public Vector3 btnSize; //z contains the empty space
     public CarStorage[] cars;
     public Vector3[] carPositions;
     public float rotationTime;
+    public float rotationSpeed;
 
     int selectedCar = 0, switchFlag;
     State state = State.MainMenu;
@@ -31,7 +32,10 @@ public class MainMenu : MonoBehaviour
     {
         keyBinds = CInput.GetKeyBindings();
         for (int i = 0; i < carPositions.Length; i++)
+        {
             cars[i].carTransform = ((GameObject)Instantiate(cars[i].carDriverPair, carPositions[i], Quaternion.identity)).transform;
+            Utilities.EnableRenders(cars[i].carTransform.gameObject, false);
+        }
     }
 
     void Update()
@@ -53,15 +57,29 @@ public class MainMenu : MonoBehaviour
         {
             if ((counter += Time.deltaTime / rotationTime) < 1)
             {
-                /*cars[selectedCar].carTransform.position = Utilities.Lerp(carPositions[switchFlag == 1 ? 0 : 2], carPositions[1], counter);
-                cars[selectedCar+1].carTransform.position = Utilities.Lerp(carPositions[1], carPositions[switchFlag == 1 ? 2 : 1], counter);
-                cars[selectedCar-1].carTransform.position = Utilities.Lerp(carPositions[switchFlag == 1 ? 0 : 2], carPositions[1], counter);*/
+                for (int i = 0; i < cars.Length; i++)
+                {
+                    int index = (switchFlag == 1 ? i : cars.Length - 1 - i);
+                    int nextIndex = index + switchFlag;
+                    if (nextIndex == -1)
+                        nextIndex = cars.Length - 1;
+                    else if (nextIndex == cars.Length)
+                        nextIndex = 0;
+                    cars[index].carTransform.position = Utilities.Lerp(carPositions[index], carPositions[nextIndex], counter);
+                }
             }
             else
             {
                 counter = 0;
                 switchFlag = 0;
             }
+        }
+
+        foreach (CarStorage carStorage in cars)
+        {
+            Vector3 rot = carStorage.carTransform.eulerAngles;
+            rot.y += rotationSpeed * Time.deltaTime;
+            carStorage.carTransform.eulerAngles = rot;
         }
     }
 
@@ -75,8 +93,6 @@ public class MainMenu : MonoBehaviour
             if (!string.IsNullOrEmpty(editingKey))
                 SetKeyBind();
         }
-        else if (state == State.LevelSelect)
-            DrawLevelSelect();
         else if (state == State.KartSelect)
             DrawKartSelect();
     }
@@ -85,7 +101,11 @@ public class MainMenu : MonoBehaviour
     {
         float x = Screen.width / 2, y = Screen.height / 2;
         if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Play The Game"))
-            state = State.LevelSelect;
+        {
+            state = State.KartSelect;
+            foreach (CarStorage carStorage in cars)
+                Utilities.EnableRenders(carStorage.carTransform.gameObject, true);
+        }
 
         y += btnSize.y + btnSize.z;
         if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Options"))
@@ -119,17 +139,6 @@ public class MainMenu : MonoBehaviour
             state = State.MainMenu;
     }
 
-    void DrawLevelSelect()
-    {
-        float x = Screen.width / 2, y = Screen.height / 10;
-        if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Select Kart"))
-            state = State.KartSelect;
-
-        y += btnSize.y + btnSize.z;
-        if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Back"))
-            state = State.MainMenu;
-    }
-
     void DrawKartSelect()
     {
         float x = Screen.width / 2, y = Screen.height / 10;
@@ -152,8 +161,12 @@ public class MainMenu : MonoBehaviour
             Application.LoadLevel(1);
 
         y += btnSize.y + btnSize.z;
-        if (GUI.Button(new Rect(x - btnSize.x/2, y, btnSize.x, btnSize.y), "Back"))
-            state = State.LevelSelect;
+        if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Back"))
+        {
+            state = State.MainMenu;
+            foreach (CarStorage carStorage in cars)
+                Utilities.EnableRenders(carStorage.carTransform.gameObject, false);
+        }
     }
 
     void OnDrawGizmos()

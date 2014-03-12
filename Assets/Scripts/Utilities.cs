@@ -22,4 +22,11 @@ public static class Utilities
     {
         return new Vector3(Mathf.Lerp(from.x, to.x, t), Mathf.Lerp(from.y, to.y, t), Mathf.Lerp(from.z, to.z, t));
     }
+
+    public static void EnableRenders(GameObject gO, bool state)
+    {
+        Renderer[] renderers = gO.GetComponentsInChildren<Renderer>();
+        foreach (Renderer renderer in renderers)
+            renderer.enabled = state;
+    }
 }
