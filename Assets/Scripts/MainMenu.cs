@@ -22,7 +22,7 @@ public class MainMenu : MonoBehaviour
     public float rotationTime;
     public float rotationSpeed;
 
-    int selectedCar = 0, switchFlag;
+    int selectedCar = 1, switchFlag;
     State state = State.MainMenu;
     Dictionary<string, KeyCode> keyBinds;
     string editingKey = null;
@@ -168,7 +168,10 @@ public class MainMenu : MonoBehaviour
 
         y += btnSize.y + btnSize.z;
         if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Play"))
+        {
+            GameStorage.Instance.carIndex = selectedCar;
             Application.LoadLevel(1);
+        }
 
         y += btnSize.y + btnSize.z;
         if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Back"))

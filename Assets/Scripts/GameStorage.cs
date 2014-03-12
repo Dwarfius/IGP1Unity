@@ -1,6 +1,11 @@
 using UnityEngine;
 using System.Collections;
 
+public enum Cars
+{
+    Serpent, Janitor, Cola, Popcorn, French, Gorilla
+}
+
 public class GameStorage : MonoBehaviour 
 {
     #region Singleton implementation
@@ -20,5 +25,5 @@ public class GameStorage : MonoBehaviour
     }
     #endregion
 
-    public GameObject car;
+    public int carIndex;
 }

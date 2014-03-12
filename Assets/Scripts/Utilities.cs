@@ -29,4 +29,20 @@ public static class Utilities
         foreach (Renderer renderer in renderers)
             renderer.enabled = state;
     }
+
+    public static GameObject GetPrefab(this Cars car)
+    {
+        if (car == Cars.Serpent)
+            return (GameObject)Resources.Load("Prefabs/Serpent Car");
+        else if (car == Cars.Popcorn)
+            return (GameObject)Resources.Load("Prefabs/Popcorn Car");
+        else if (car == Cars.Janitor)
+            return (GameObject)Resources.Load("Prefabs/Janitor Car");
+        else if (car == Cars.Gorilla)
+            return (GameObject)Resources.Load("Prefabs/Gorilla Car");
+        else if (car == Cars.French)
+            return (GameObject)Resources.Load("Prefabs/French Car");
+        else
+            return (GameObject)Resources.Load("Prefabs/Popcorn Car");
+    }
 }
