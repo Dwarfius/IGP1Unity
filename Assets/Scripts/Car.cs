@@ -15,7 +15,7 @@ public class Car : MonoBehaviour
     }
 
     public Transform[] frontWheels, backWheels;
-    public float slipValue = 300;
+    public float slipValue = 300, stiffnesCoeff = 0.6f;
     public int gears = 5;
     public float topSpeed = 160, suspensionRange = 0.1f, suspensionDamper = 50;
     public float maximumTurn = 15, minimumTurn = 10, resetTime = 3;
@@ -113,7 +113,7 @@ public class Car : MonoBehaviour
         GameObject go = new GameObject(wheelTransform + " Collider");
         go.transform.position = wheelTransform.position;
         go.transform.parent = transform;
-        go.transform.rotation = wheelTransform.rotation;
+        //go.transform.rotation = wheelTransform.rotation;
 
         WheelCollider wc = go.AddComponent<WheelCollider>();
         wc.suspensionDistance = suspensionRange;
@@ -299,7 +299,7 @@ public class Car : MonoBehaviour
         sidewaysCurve.extremumValue = forwardCurve.extremumValue = slipValue - slipValue * 0.9f * coeff;
         sidewaysCurve.asymptoteValue = forwardCurve.asymptoteValue = slipValue/2 - slipValue * 0.45f * coeff;
 
-        sidewaysCurve.stiffness = 1 - 0.6f * relativeVel.magnitude / topSpeed; //it's kind of cheating, but f it :D
+        sidewaysCurve.stiffness = 1 - stiffnesCoeff * relativeVel.magnitude / topSpeed; //it's kind of cheating, but f it :D
 
         foreach (Wheel wheel in wheels)
         {

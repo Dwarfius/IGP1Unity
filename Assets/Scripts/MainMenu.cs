@@ -5,13 +5,13 @@ using System.Collections.Generic;
 public class MainMenu : MonoBehaviour 
 {
     #region CarStorage
-    [System.Serializable]
-    public class CarStorage
+    [System.Serializable] public class CarStorage
     {
         public GameObject carDriverPair;
         public string name;
 
         [HideInInspector] public Transform carTransform;
+        [HideInInspector] public int pos;
     }
     #endregion
     enum State { MainMenu, Options, KartSelect }
@@ -34,7 +34,9 @@ public class MainMenu : MonoBehaviour
         for (int i = 0; i < carPositions.Length; i++)
         {
             cars[i].carTransform = ((GameObject)Instantiate(cars[i].carDriverPair, carPositions[i], Quaternion.identity)).transform;
+            cars[i].carTransform.eulerAngles = new Vector3(0, Random.Range(0, 360), 0);
             Utilities.EnableRenders(cars[i].carTransform.gameObject, false);
+            cars[i].pos = i;
         }
     }
 
@@ -42,13 +44,13 @@ public class MainMenu : MonoBehaviour
     {
         if (CInput.GetKeyDown("Right"))
         {
-            switchFlag = 1;
+            switchFlag = -1;
             if (++selectedCar == cars.Length)
                 selectedCar = 0;
         }
         else if (CInput.GetKeyDown("Left"))
         {
-            switchFlag = -1;
+            switchFlag = 1;
             if (--selectedCar == -1)
                 selectedCar = cars.Length - 1;
         }
@@ -60,17 +62,25 @@ public class MainMenu : MonoBehaviour
                 for (int i = 0; i < cars.Length; i++)
                 {
                     int index = (switchFlag == 1 ? i : cars.Length - 1 - i);
-                    int nextIndex = index + switchFlag;
+                    int nextIndex = cars[index].pos + switchFlag;
                     if (nextIndex == -1)
                         nextIndex = cars.Length - 1;
                     else if (nextIndex == cars.Length)
                         nextIndex = 0;
-                    cars[index].carTransform.position = Utilities.Lerp(carPositions[index], carPositions[nextIndex], counter);
+                    cars[index].carTransform.position = Utilities.Lerp(carPositions[cars[index].pos], carPositions[nextIndex], counter);
                 }
             }
             else
             {
                 counter = 0;
+                foreach (CarStorage carStorage in cars)
+                {
+                    carStorage.pos += switchFlag;
+                    if (carStorage.pos == -1)
+                        carStorage.pos = cars.Length - 1;
+                    else if (carStorage.pos == cars.Length)
+                        carStorage.pos = 0;
+                }
                 switchFlag = 0;
             }
         }
@@ -147,13 +157,13 @@ public class MainMenu : MonoBehaviour
         {
             if (++selectedCar == cars.Length) 
                 selectedCar = 0;
-            switchFlag = 1;
+            switchFlag = -1;
         }
         else if (GUI.Button(new Rect(x - btnSize.x - btnSize.z, y, btnSize.x, btnSize.y), "Prev"))
         {
             if (--selectedCar == -1)
                 selectedCar = cars.Length - 1;
-            switchFlag = -1;
+            switchFlag = 1;
         }
 
         y += btnSize.y + btnSize.z;
@@ -167,6 +177,9 @@ public class MainMenu : MonoBehaviour
             foreach (CarStorage carStorage in cars)
                 Utilities.EnableRenders(carStorage.carTransform.gameObject, false);
         }
+
+        y += btnSize.y + btnSize.z;
+        GUI.Box(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Car: " + cars[selectedCar].name);
     }
 
     void OnDrawGizmos()
