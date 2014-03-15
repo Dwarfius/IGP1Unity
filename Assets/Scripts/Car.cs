@@ -55,7 +55,6 @@ public class Car : MonoBehaviour
         GetInput();
         CheckIfFlipped();
         UpdateGear(relativeVelocity);
-        
 	}
 
     public virtual void FixedUpdate()

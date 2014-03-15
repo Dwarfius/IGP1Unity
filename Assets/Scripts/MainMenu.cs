@@ -87,9 +87,7 @@ public class MainMenu : MonoBehaviour
 
         foreach (CarStorage carStorage in cars)
         {
-            Vector3 rot = carStorage.carTransform.eulerAngles;
-            rot.y += rotationSpeed * Time.deltaTime;
-            carStorage.carTransform.eulerAngles = rot;
+            
         }
     }
 
