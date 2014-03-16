@@ -7,8 +7,8 @@ public class Rotation : MonoBehaviour
 
 	void Update () 
     {
-        Vector3 rot = transform.eulerAngles;
-        rot.y += rotationSpeed * Time.deltaTime;
-        carStorage.carTransform.eulerAngles = rot;
+        Vector3 rot = transform.localEulerAngles;
+        rot.y += rorationSpeed * Time.deltaTime;
+        transform.localEulerAngles = rot;
 	}
 }
