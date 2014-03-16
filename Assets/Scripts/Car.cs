@@ -112,7 +112,7 @@ public class Car : MonoBehaviour
         GameObject go = new GameObject(wheelTransform + " Collider");
         go.transform.position = wheelTransform.position;
         go.transform.parent = transform;
-        //go.transform.rotation = wheelTransform.rotation;
+        go.transform.localEulerAngles = new Vector3(0, 0, 0); 
 
         WheelCollider wc = go.AddComponent<WheelCollider>();
         wc.suspensionDistance = suspensionRange;

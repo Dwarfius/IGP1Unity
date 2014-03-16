@@ -19,7 +19,7 @@ public class WaypointManager : MonoBehaviour
         for (int i = 0; i < waypoints.Length; i++)
         {
             Gizmos.color = (i == waypoints.Length - 1 ? Color.magenta : Color.red);
-            Gizmos.DrawCube(waypoints[i].position, 2 * Vector3.one);
+            Gizmos.DrawCube(waypoints[i].position, Vector3.one);
             Gizmos.color = Color.blue;
             Gizmos.DrawLine(waypoints[i].position, (i == waypoints.Length - 1 ? waypoints[0].position : waypoints[i+1].position));
         }
