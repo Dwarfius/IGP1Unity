@@ -17,14 +17,13 @@ public class Car : MonoBehaviour
     public Transform[] frontWheels, backWheels;
     public float slipValue = 300, stiffnesCoeff = 0.6f;
     public int gears = 5;
-    public float topSpeed = 160, suspensionRange = 0.1f, suspensionDamper = 50;
-    public float maximumTurn = 15, minimumTurn = 10, resetTime = 3;
-    public float suspensionSpringFront = 18500, suspensionSpringRear = 9000;
-    public float handbrakeXDragFactor = 0.5f;
+    public float topSpeed = 160;
+    public float maximumTurn = 10, minimumTurn = 3, resetTime = 3;
     public Transform centerOfMass;
-    public Vector3 dragMultiplier = new Vector3(2, 5, 1);
 
-    protected Wheel[] wheels;
+    float handbrakeXDragFactor = 0.5f;
+    float suspensionSpringFront = 18500, suspensionSpringRear = 9000, suspensionRange = 0.1f, suspensionDamper = 50;
+    Vector3 dragMultiplier = new Vector3(2, 5, 1);
     float[] engineForceValues, gearSpeeds;
     bool handbrake, canDrive, canSteer;
     bool inMenu;
@@ -33,6 +32,7 @@ public class Car : MonoBehaviour
 
     protected float currentEnginePower, throttle;
     protected float handbrakeTime, steer, initialDragMultiplierX, resetTimer;
+    protected Wheel[] wheels;
 
 	public virtual void Start () 
     {

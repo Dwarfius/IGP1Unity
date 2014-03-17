@@ -52,7 +52,7 @@ public class SteeringAI : Car
         {
             if ((projectedPos.ToV2() - newPoint).sqrMagnitude > rad * rad)
             {
-                throttle = 0;
+                throttle = (rigidbody.velocity.sqrMagnitude < 100 ? 1 : 0);
                 steer = currentSegm.IsLeftOfLine(projectedPos.ToV2());
                 color = Color.red;
             }
@@ -74,7 +74,7 @@ public class SteeringAI : Car
             {
                 if ((projectedPos.ToV2() - newPoint).sqrMagnitude > rad * rad)
                 {
-                    throttle = 0;
+                    throttle = (rigidbody.velocity.sqrMagnitude < 100 ? 1 : 0);
                     steer = currentSegm.IsLeftOfLine(projectedPos.ToV2());
                     color = Color.red;
                 }
@@ -95,12 +95,10 @@ public class SteeringAI : Car
     {
         if (other.gameObject.tag == "Wall")
         {
-            Debug.Log("Hit");
             foreach (ContactPoint p in other.contacts)
-            {
                 Debug.DrawLine(p.point, p.point + p.normal, Color.red, 3);
-                timer = timerConst;
-            }
+
+            timer = timerConst;
         }
     }
 
