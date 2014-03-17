@@ -41,7 +41,7 @@ public class GameStorage : MonoBehaviour
 
     float circleDist;
 
-    void Start()
+    void OnLevelLoad()
     {
         for (int i = 0; i < WaypointManager.Instance.waypoints.Length; i++)
             circleDist += WaypointManager.Instance.GetSegment(i).Distance;
