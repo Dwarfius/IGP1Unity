@@ -3,6 +3,7 @@ using System.Collections;
 
 public class SteeringAI : Car 
 {
+    public bool userOverride;
     int currentWaypoint = 0;
     Line currentSegm;
     float timer;
@@ -11,11 +12,18 @@ public class SteeringAI : Car
     {
         base.Start();
         currentSegm = WaypointManager.Instance.GetSegment(currentWaypoint);
+        StartCoroutine(WrongWayCoroutine());
     }
 
     public override void Update()
     {
-        MakeDecision();
+        if (userOverride && (CInput.GetAxis("Horizontal") != 0 || CInput.GetAxis("Vertical") != 0))
+        {
+            throttle = CInput.GetAxis("Vertical");
+            steer = CInput.GetAxis("Horizontal");
+        }
+        else
+            MakeDecision();
         CheckIfFlipped();
         Vector3 relativeVel = transform.InverseTransformDirection(rigidbody.velocity);
         UpdateGear(relativeVel);
@@ -43,9 +51,10 @@ public class SteeringAI : Car
         {
             if ((projectedPos.ToV2() - newPoint).sqrMagnitude > rad * rad)
             {
-                //float dist = (projectedPos.ToV2() - newPoint).magnitude;
-                throttle = 0;// (1 / (dist - rad)) * 0.05f;
-                steer = currentSegm.IsLeftOfLine(projectedPos.ToV2());
+                float dist = (projectedPos.ToV2() - newPoint).magnitude;
+                //throttle = (1 / (dist - rad));
+                throttle = 0.1f;
+                steer = currentSegm.IsLeftOfLine(projectedPos.ToV2()) * Mathf.Clamp01((dist - rad)/ (rad * 3));
                 color = Color.red;
             }
             else
@@ -72,8 +81,29 @@ public class SteeringAI : Car
             foreach (ContactPoint p in other.contacts)
             {
                 Debug.DrawLine(p.point, p.point + p.normal, Color.red, 3);
-                timer = 1;
+                timer = 2;
             }
+        }
+    }
+
+    float t;
+    IEnumerator WrongWayCoroutine()
+    {
+        while (true)
+        {
+            if (timer <= 0 && Mathf.Abs(transform.forward.z - currentSegm.ForwardNormal.z) > 1) //if going the other direction
+            {
+                t += Time.fixedDeltaTime;
+                if (t >= 1)
+                {
+                    t = 0;
+                    transform.position = currentSegm.aTrans.position;
+                    transform.LookAt(currentSegm.bTrans);
+                    rigidbody.velocity = Vector3.zero;
+                    rigidbody.angularVelocity = Vector3.zero;
+                }
+            }
+            yield return new WaitForFixedUpdate();
         }
     }
 }

@@ -4,12 +4,18 @@ using System.Collections;
 public class Line
 {
     public Vector2 A, B;
+    public Transform aTrans, bTrans;
     float r1, r2;
     float k, c;
+
+    public Vector3 ForwardNormal { get { return (bTrans.position - aTrans.position).normalized; } }
+
     public Line(Transform a, Transform b)
     {
-        A = a.ToV2();
-        B = b.ToV2();
+        aTrans = a;
+        bTrans = b;
+        A = aTrans.ToV2();
+        B = bTrans.ToV2();
         r1 = a.GetComponent<Waypoint>().radius;
         r2 = b.GetComponent<Waypoint>().radius;
         k = (B.y - A.y) / (B.x - A.x);
