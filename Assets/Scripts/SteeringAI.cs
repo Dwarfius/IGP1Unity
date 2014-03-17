@@ -5,14 +5,11 @@ public class SteeringAI : Car
 {
     const float timerConst = 1.25f;
     public bool userOverride;
-    int currentWaypoint = 0;
-    Line currentSegm;
     float timer;
 
     public override void Start()
     {
         base.Start();
-        currentSegm = WaypointManager.Instance.GetSegment(currentWaypoint);
         StartCoroutine(WrongWayCoroutine());
     }
 

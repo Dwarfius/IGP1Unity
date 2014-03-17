@@ -32,6 +32,7 @@ public static class Utilities
 
     public static GameObject GetPrefab(this Cars car)
     {
+        return (GameObject)Resources.Load("Prefabs/Bucket Car");
         if (car == Cars.Serpent)
             return (GameObject)Resources.Load("Prefabs/Serpent Car");
         else if (car == Cars.Popcorn)

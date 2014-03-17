@@ -14,12 +14,15 @@ public class Car : MonoBehaviour
         public Vector3 wheelVel, groundSpeed;
     }
 
+    public Cars car;
     public Transform[] frontWheels, backWheels;
     public float slipValue = 300, stiffnesCoeff = 0.6f;
     public int gears = 5;
     public float topSpeed = 160;
     public float maximumTurn = 10, minimumTurn = 3, resetTime = 3;
     public Transform centerOfMass;
+
+    [HideInInspector] public int currentWaypoint;
 
     float handbrakeXDragFactor = 0.5f;
     float suspensionSpringFront = 18500, suspensionSpringRear = 9000, suspensionRange = 0.1f, suspensionDamper = 50;
@@ -33,6 +36,7 @@ public class Car : MonoBehaviour
     protected float currentEnginePower, throttle;
     protected float handbrakeTime, steer, initialDragMultiplierX, resetTimer;
     protected Wheel[] wheels;
+    protected Line currentSegm;
 
 	public virtual void Start () 
     {
@@ -47,6 +51,19 @@ public class Car : MonoBehaviour
         SetUpGears();
 
         initialDragMultiplierX = dragMultiplier.x;
+
+        //get current wapoint
+        for (int i = 0; i < WaypointManager.Instance.waypoints.Length-1; i++)
+        {
+            bool inSegm = false;
+            currentSegm = WaypointManager.Instance.GetSegment(i);
+            currentSegm.MapPointOnLine(transform.ToV2(), out inSegm);
+            if (inSegm)
+            {
+                currentWaypoint = i;
+                return;
+            }
+        }
 	}
 	
 	public virtual void Update () 
@@ -77,8 +94,16 @@ public class Car : MonoBehaviour
     {
         GUI.Label(new Rect(0, 0, 100, 50), "Speed: " + rigidbody.velocity.magnitude + "\nGear: " + currentGear);
 
-        if(inMenu)
+        if (inMenu)
             DrawMenu();
+        else
+        {
+            string b = "";
+            for (int i = 0; i < 6; i++)
+                b += (i + 1) + ". " + GameStorage.Instance.cars[i].carName + "\n";
+            Vector2 size = GUI.skin.box.CalcSize(new GUIContent(b));
+            GUI.Box(new Rect(Screen.width - size.x, 0, size.x, size.y), b);
+        }
     }
 
     //===========================================================================

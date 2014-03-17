@@ -9,6 +9,7 @@ public class Line
     float k, c;
 
     public Vector3 ForwardNormal { get { return (bTrans.position - aTrans.position).normalized; } }
+    public float Distance { get { return (B - A).magnitude; } }
 
     public Line(Transform a, Transform b)
     {
