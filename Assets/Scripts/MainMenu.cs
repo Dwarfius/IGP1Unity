@@ -84,11 +84,6 @@ public class MainMenu : MonoBehaviour
                 switchFlag = 0;
             }
         }
-
-        foreach (CarStorage carStorage in cars)
-        {
-            
-        }
     }
 
     void OnGUI()

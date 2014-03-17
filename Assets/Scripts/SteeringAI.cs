@@ -5,6 +5,7 @@ public class SteeringAI : Car
 {
     int currentWaypoint = 0;
     Line currentSegm;
+    float timer;
 
     public override void Start()
     {
@@ -14,9 +15,9 @@ public class SteeringAI : Car
 
     public override void Update()
     {
-        Vector3 relativeVel = transform.InverseTransformDirection(rigidbody.velocity);
         MakeDecision();
         CheckIfFlipped();
+        Vector3 relativeVel = transform.InverseTransformDirection(rigidbody.velocity);
         UpdateGear(relativeVel);
     }
 
@@ -38,19 +39,41 @@ public class SteeringAI : Car
 
         float rad = currentSegm.GetRadiusForMappedPoint(newPoint);
         Color color;
-        if ((projectedPos.ToV2() - newPoint).sqrMagnitude > rad * rad)
+        if (timer <= 0)
         {
-            //float dist = (projectedPos.ToV2() - newPoint).magnitude;
-            throttle = 0;// (1 / (dist - rad)) * 0.05f;
-            steer = currentSegm.IsLeftOfLine(projectedPos.ToV2());
-            color = Color.red;
+            if ((projectedPos.ToV2() - newPoint).sqrMagnitude > rad * rad)
+            {
+                //float dist = (projectedPos.ToV2() - newPoint).magnitude;
+                throttle = 0;// (1 / (dist - rad)) * 0.05f;
+                steer = currentSegm.IsLeftOfLine(projectedPos.ToV2());
+                color = Color.red;
+            }
+            else
+            {
+                throttle = 1;
+                steer = 0;
+                color = Color.green;
+            }
         }
         else
         {
-            throttle = 1;
-            steer = 0;
-            color = Color.green;
+            timer -= Time.deltaTime;
+            throttle = -0.1f;
+            steer = -currentSegm.IsLeftOfLine(projectedPos.ToV2());
+            color = Color.blue;
         }
         Debug.DrawLine(new Vector3(projectedPos.x, transform.position.y, projectedPos.z), new Vector3(newPoint.x, transform.position.y, newPoint.y), color);
+    }
+
+    void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.tag != "Ground")
+        {
+            foreach (ContactPoint p in other.contacts)
+            {
+                Debug.DrawLine(p.point, p.point + p.normal, Color.red, 3);
+                timer = 1;
+            }
+        }
     }
 }
