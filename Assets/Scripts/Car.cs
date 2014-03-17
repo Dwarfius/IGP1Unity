@@ -32,11 +32,11 @@ public class Car : MonoBehaviour
     bool inMenu;
     int currentGear;
     Texture2D blackText;
+    Line currentSegm;
 
     protected float currentEnginePower, throttle;
     protected float handbrakeTime, steer, initialDragMultiplierX, resetTimer;
     protected Wheel[] wheels;
-    protected Line currentSegm;
 
 	public virtual void Start () 
     {
@@ -69,6 +69,7 @@ public class Car : MonoBehaviour
 	public virtual void Update () 
     {
         Vector3 relativeVelocity = transform.InverseTransformDirection(rigidbody.velocity);
+        CheckWaypointSegm();
         GetInput();
         CheckIfFlipped();
         UpdateGear(relativeVelocity);
@@ -100,7 +101,12 @@ public class Car : MonoBehaviour
         {
             string b = "";
             for (int i = 0; i < 6; i++)
-                b += (i + 1) + ". " + GameStorage.Instance.cars[i].carName + "\n";
+            {
+                if (GameStorage.Instance.cars[i].carName == car)
+                    b += (i + 1) + ". " + GameStorage.Instance.cars[i].carName + " - Player\n";
+                else
+                    b += (i + 1) + ". " + GameStorage.Instance.cars[i].carName + "\n";
+            }
             Vector2 size = GUI.skin.box.CalcSize(new GUIContent(b));
             GUI.Box(new Rect(Screen.width - size.x, 0, size.x, size.y), b);
         }
@@ -211,6 +217,21 @@ public class Car : MonoBehaviour
         steer = CInput.GetAxis("Horizontal");
 
         CheckHandbrake();
+    }
+
+    protected void CheckWaypointSegm()
+    {
+        bool inSegm = false;
+        currentSegm.MapPointOnLine(transform.ToV2(), out inSegm);
+        if (!inSegm)
+        {
+            if (++currentWaypoint == WaypointManager.Instance.waypoints.Length)
+            {
+                currentWaypoint = 0;
+                GameStorage.Instance.AddLap(car);
+            }
+            currentSegm = WaypointManager.Instance.GetSegment(currentWaypoint);
+        }
     }
 
     void CheckHandbrake()

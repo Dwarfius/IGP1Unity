@@ -7,11 +7,14 @@ public class WaypointManager : MonoBehaviour
 
     public Transform[] waypoints;
 
-    public static WaypointManager Instance { get { return instance; } }
-
-    void Awake()
-    {
-        instance = this;
+    public static WaypointManager Instance 
+    { 
+        get 
+        {
+            if (!instance)
+                instance = GameObject.FindGameObjectWithTag("WaypointRoot").GetComponent<WaypointManager>();
+            return instance; 
+        }
     }
 
     void OnDrawGizmos()
