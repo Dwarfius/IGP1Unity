@@ -88,7 +88,6 @@ public class Car : MonoBehaviour
             ApplyThrottle(relativeVel);
         if (canSteer)
             ApplySteering(relativeVel);
-        RotateWheels(relativeVel);
     }
 
     public virtual void OnGUI()
@@ -426,17 +425,6 @@ public class Car : MonoBehaviour
     {
         float speedIndex = 1 - (speed / topSpeed);
         return minimumTurn + speedIndex * (maximumTurn - minimumTurn);
-    }
-
-    void RotateWheels(Vector3 relativeVel) //throttle rotation, rolling
-    {
-        float speed = relativeVel.magnitude;
-        foreach (Wheel w in wheels)
-        {
-            float L = w.col.radius * 2 * Mathf.PI;
-            float percent = speed / L;
-            w.wheelGraphic.Rotate(w.wheelGraphic.right, percent * 360 * Time.deltaTime, Space.World);
-        }
     }
 
     //===========================================================================
