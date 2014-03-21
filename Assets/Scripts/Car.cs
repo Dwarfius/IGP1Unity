@@ -21,6 +21,7 @@ public class Car : MonoBehaviour
     public float topSpeed = 160;
     public float maximumTurn = 10, minimumTurn = 3, resetTime = 3;
     public Transform centerOfMass;
+    public Texture2D gauge, arrow;
 
     [HideInInspector] public int currentWaypoint;
 
@@ -32,7 +33,7 @@ public class Car : MonoBehaviour
     bool inMenu;
     int currentGear;
     Texture2D blackText;
-    Line currentSegm;
+    Line currentSegm = null;
 
     protected float currentEnginePower, throttle;
     protected float handbrakeTime, steer, initialDragMultiplierX, resetTimer;
@@ -53,15 +54,18 @@ public class Car : MonoBehaviour
         initialDragMultiplierX = dragMultiplier.x;
 
         //get current wapoint
-        for (int i = 0; i < WaypointManager.Instance.waypoints.Length-1; i++)
+        if (WaypointManager.Instance != null)
         {
-            bool inSegm = false;
-            currentSegm = WaypointManager.Instance.GetSegment(i);
-            currentSegm.MapPointOnLine(transform.ToV2(), out inSegm);
-            if (inSegm)
+            for (int i = 0; i < WaypointManager.Instance.waypoints.Length - 1; i++)
             {
-                currentWaypoint = i;
-                return;
+                bool inSegm = false;
+                currentSegm = WaypointManager.Instance.GetSegment(i);
+                currentSegm.MapPointOnLine(transform.ToV2(), out inSegm);
+                if (inSegm)
+                {
+                    currentWaypoint = i;
+                    return;
+                }
             }
         }
 	}
@@ -69,7 +73,8 @@ public class Car : MonoBehaviour
 	public virtual void Update () 
     {
         Vector3 relativeVelocity = transform.InverseTransformDirection(rigidbody.velocity);
-        CheckWaypointSegm();
+        if(currentSegm != null)
+            CheckWaypointSegm();
         GetInput();
         CheckIfFlipped();
         UpdateGear(relativeVelocity);
@@ -92,11 +97,14 @@ public class Car : MonoBehaviour
 
     public virtual void OnGUI()
     {
-        GUI.Label(new Rect(0, 0, 100, 50), "Speed: " + rigidbody.velocity.magnitude + "\nGear: " + currentGear);
+        GUI.DrawTexture(new Rect(Screen.width - gauge.width, Screen.height - gauge.height, gauge.width, gauge.height), gauge);
+        GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.EulerRotation(0, 0, rigidbody.velocity.magnitude / topSpeed), Vector3.one);
+        GUI.DrawTexture(new Rect(Screen.width - gauge.width / 2, Screen.height - gauge.height / 2, arrow.width, arrow.height), arrow);
+        GUI.matrix = Matrix4x4.identity;
 
         if (inMenu)
             DrawMenu();
-        else
+        else if(GameStorage.Instance != null && GameStorage.Instance.cars != null)
         {
             string b = "";
             for (int i = 0; i < 6; i++)

@@ -35,7 +35,7 @@ public class GameStorage : MonoBehaviour
     }
     #endregion
 
-    public CarStorage[] cars = new CarStorage[6];
+    public CarStorage[] cars = null;
     public int carIndex;
     public bool canUpdate;
 
@@ -45,10 +45,12 @@ public class GameStorage : MonoBehaviour
     {
         if (level == 1)
         {
+
             for (int i = 0; i < WaypointManager.Instance.waypoints.Length; i++) //caching total lap distance
                 circleDist += WaypointManager.Instance.GetSegment(i).Distance;
 
             Transform[] positions = new Transform[6];
+            cars = new CarStorage[6];
             for (int i = 0; i < positions.Length; i++)
             {
                 positions[i] = GameObject.Find("Pos" + (i + 1)).transform; //gathering all starting positions
