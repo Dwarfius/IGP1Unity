@@ -21,8 +21,9 @@ public class Car : MonoBehaviour
     public float topSpeed = 160;
     public float maximumTurn = 10, minimumTurn = 3, resetTime = 3;
     public Transform centerOfMass;
-    public Texture2D gauge, arrow;
-
+    public Texture2D minimap, gauge, arrow;
+    public Vector2 minimapStartOffset, trackSize, minimapScale;
+        
     [HideInInspector] public int currentWaypoint;
 
     float handbrakeXDragFactor = 0.5f;
@@ -38,9 +39,11 @@ public class Car : MonoBehaviour
     protected float currentEnginePower, throttle;
     protected float handbrakeTime, steer, initialDragMultiplierX, resetTimer;
     protected Wheel[] wheels;
+    protected Texture2D minimapChar;
 
 	public virtual void Start () 
     {
+        minimapChar = Utilities.GetMinimapTexture(car);
         blackText = new Texture2D(1, 1);
         blackText.SetPixel(0, 0, new Color(0, 0, 0, 0.5f));
         blackText.Apply();
@@ -53,7 +56,7 @@ public class Car : MonoBehaviour
 
         initialDragMultiplierX = dragMultiplier.x;
 
-        //get current wapoint
+        //get current waypoint
         if (WaypointManager.Instance != null)
         {
             for (int i = 0; i < WaypointManager.Instance.waypoints.Length - 1; i++)
@@ -97,26 +100,13 @@ public class Car : MonoBehaviour
 
     public virtual void OnGUI()
     {
-        GUI.DrawTexture(new Rect(Screen.width - gauge.width, Screen.height - gauge.height, gauge.width, gauge.height), gauge);
-        GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.EulerRotation(0, 0, rigidbody.velocity.magnitude / topSpeed), Vector3.one);
-        GUI.DrawTexture(new Rect(Screen.width - gauge.width / 2, Screen.height - gauge.height / 2, arrow.width, arrow.height), arrow);
-        GUI.matrix = Matrix4x4.identity;
+        DrawMinimap();
+        DrawSpeedometer();
+        if (GameStorage.Instance != null && GameStorage.Instance.cars != null)
+            DrawLeaderboard();
 
         if (inMenu)
             DrawMenu();
-        else if(GameStorage.Instance != null && GameStorage.Instance.cars != null)
-        {
-            string b = "";
-            for (int i = 0; i < 6; i++)
-            {
-                if (GameStorage.Instance.cars[i].carName == car)
-                    b += (i + 1) + ". " + GameStorage.Instance.cars[i].carName + " - Player\n";
-                else
-                    b += (i + 1) + ". " + GameStorage.Instance.cars[i].carName + "\n";
-            }
-            Vector2 size = GUI.skin.box.CalcSize(new GUIContent(b));
-            GUI.Box(new Rect(Screen.width - size.x, 0, size.x, size.y), b);
-        }
     }
 
     //===========================================================================
@@ -454,6 +444,38 @@ public class Car : MonoBehaviour
             Time.timeScale = 1;
             inMenu = false;
         }
+    }
+
+    void DrawSpeedometer()
+    {
+        GUI.DrawTexture(new Rect(Screen.width - gauge.width, Screen.height - gauge.height, gauge.width, gauge.height), gauge);
+        GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0, 0, rigidbody.velocity.magnitude / topSpeed), Vector3.one);
+        GUI.DrawTexture(new Rect(Screen.width - gauge.width / 2, Screen.height - gauge.height / 2, arrow.width, arrow.height), arrow);
+        GUI.matrix = Matrix4x4.identity;
+    }
+
+    void DrawLeaderboard()
+    {
+        string b = "";
+        for (int i = 0; i < 6; i++)
+        {
+            if (GameStorage.Instance.cars[i].carName == car)
+                b += (i + 1) + ". " + GameStorage.Instance.cars[i].carName + " - Player\n";
+            else
+                b += (i + 1) + ". " + GameStorage.Instance.cars[i].carName + "\n";
+        }
+        Vector2 size = GUI.skin.box.CalcSize(new GUIContent(b));
+        GUI.Box(new Rect(Screen.width - size.x, 0, size.x, size.y), b);
+    }
+
+    void DrawMinimap()
+    {
+        Vector2 minimapSize = Vector2.Scale(new Vector2(minimap.width, minimap.height), minimapScale);
+        Vector2 relativePos = transform.ToV2() - minimapStartOffset;
+        relativePos = new Vector2(relativePos.x / trackSize.x, relativePos.y / trackSize.y); //[0..1]
+        Vector2 minimapPos = Vector2.Scale(relativePos, minimapSize);
+        GUI.DrawTexture(new Rect(0, Screen.height - minimapSize.y, minimapSize.x, minimapSize.y), minimap);
+        GUI.DrawTexture(new Rect(minimapPos.x - minimapChar.width / 2, minimapPos.y - minimapChar.height / 2, minimapChar.width, minimapChar.height), minimapChar);
     }
 
     //===========================================================================

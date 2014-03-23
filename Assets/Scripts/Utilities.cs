@@ -46,4 +46,20 @@ public static class Utilities
         else
             return (GameObject)Resources.Load("Prefabs/Popcorn Car");
     }
+
+    public static Texture2D GetMinimapTexture(this Cars car)
+    {
+        if(car == Cars.Serpent)
+            return (Texture2D)Resources.Load("Textures/Serpent Minimap");
+        else if(car == Cars.Popcorn)
+            return (Texture2D)Resources.Load("Textures/Popcorn Minimap");
+        else if(car == Cars.Janitor)
+            return (Texture2D)Resources.Load("Textures/Janitor Minimap");
+        else if(car == Cars.Gorilla)
+            return (Texture2D)Resources.Load("Textures/Gorilla Minimap");
+        else if(car == Cars.French)
+            return (Texture2D)Resources.Load("Textures/French Minimap");
+        else
+            return (Texture2D)Resources.Load("Textures/Cola Minimap");
+    }
 }

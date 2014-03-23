@@ -31,7 +31,10 @@ public class SteeringAI : Car
         UpdateGear(relativeVel);
     }
 
-    public override void OnGUI() { }
+    public override void OnGUI() 
+    { 
+        DrawMinimap(); 
+    }
 
     //===========================================================================
     void MakeDecision()
@@ -122,5 +125,14 @@ public class SteeringAI : Car
             }
             yield return new WaitForFixedUpdate();
         }
+    }
+
+    void DrawMinimap()
+    {
+        Vector2 minimapSize = Vector2.Scale(new Vector2(minimap.width, minimap.height), minimapScale);
+        Vector2 relativePos = transform.ToV2() - minimapStartOffset;
+        relativePos = new Vector2(relativePos.x / trackSize.x, relativePos.y / trackSize.y); //[0..1]
+        Vector2 minimapPos = Vector2.Scale(relativePos, minimapSize); //[0..minimapSize]
+        GUI.DrawTexture(new Rect(minimapPos.x - minimapChar.width / 2, minimapPos.y - minimapChar.height / 2, minimapChar.width, minimapChar.height), minimapChar);
     }
 }
