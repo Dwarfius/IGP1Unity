@@ -45,7 +45,6 @@ public class GameStorage : MonoBehaviour
     {
         if (level == 1)
         {
-
             for (int i = 0; i < WaypointManager.Instance.waypoints.Length; i++) //caching total lap distance
                 circleDist += WaypointManager.Instance.GetSegment(i).Distance;
 
@@ -89,12 +88,14 @@ public class GameStorage : MonoBehaviour
 
             //spawning player on last position
             GameObject playerCar = (GameObject)Instantiate(((Cars)carIndex).GetPrefab(), positions[5].position, Quaternion.identity);
+
             cars[5].carScript = playerCar.GetComponent<Car>();
             cars[5].carName = (Cars)carIndex;
-            cars[5].carScript.car = cars[5].carName; //same, just a precaution
-            cars[5].carScript.enabled = true;
+
             playerCar.GetComponentInChildren<Camera>().enabled = true;
             playerCar.name = cars[5].carName.ToString() + " - Player";
+
+            StartCoroutine(StartCounter());
 
             //marking to follow stats
             canUpdate = true;
@@ -152,6 +153,23 @@ public class GameStorage : MonoBehaviour
         {
             if (cars[i].carName == carType)
                 cars[i].lap++;
+        }
+    }
+
+    IEnumerator StartCounter()
+    {
+        float time = 3;
+        while ((time -= 1) > 0)
+        {
+            if (time == 2)
+                Debug.Log("Ready");
+            else if (time == 1)
+                Debug.Log("Steady");
+            else
+            {
+                Debug.Log("Go");
+            }
+            yield return new WaitForSeconds(1);
         }
     }
 }
