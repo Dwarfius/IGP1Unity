@@ -9,10 +9,6 @@ public class Ramp : MonoBehaviour
     public GameObject followCamera;
     public float timeToFollow;
 
-    void Start()
-    {
-    }
-
     void OnDrawGizmos()
     {
         Gizmos.color = Color.cyan;

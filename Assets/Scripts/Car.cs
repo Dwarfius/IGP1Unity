@@ -22,7 +22,8 @@ public class Car : MonoBehaviour
     public float maximumTurn = 10, minimumTurn = 3, resetTime = 3;
     public Transform centerOfMass;
     public Texture2D minimap, gauge, arrow;
-    public Vector2 minimapStartOffset, trackSize, minimapScale;
+    public Vector2 minimapStartOffset, trackSize, minimapScale, gaugeScale, arrowScale;
+    public float gaugeAngleOffset;
         
     [HideInInspector] public int currentWaypoint;
 
@@ -448,10 +449,14 @@ public class Car : MonoBehaviour
 
     void DrawSpeedometer()
     {
-        GUI.DrawTexture(new Rect(Screen.width - gauge.width, Screen.height - gauge.height, gauge.width, gauge.height), gauge);
-        GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0, 0, rigidbody.velocity.magnitude / topSpeed), Vector3.one);
-        GUI.DrawTexture(new Rect(Screen.width - gauge.width / 2, Screen.height - gauge.height / 2, arrow.width, arrow.height), arrow);
-        GUI.matrix = Matrix4x4.identity;
+        Matrix4x4 backupMatrix = GUI.matrix;
+        Vector2 gaugeSize = Vector2.Scale(new Vector2(gauge.width, gauge.height), gaugeScale);
+        GUI.DrawTexture(new Rect(Screen.width - gaugeSize.x, Screen.height - gaugeSize.y, gaugeSize.x, gaugeSize.y), gauge);
+        Vector2 arrowSize = Vector2.Scale(new Vector2(arrow.width, arrow.height), arrowScale);
+        Vector2 arrowPos = new Vector2(Screen.width - gaugeSize.x / 2, Screen.height - gaugeSize.y / 2);
+        GUIUtility.RotateAroundPivot(-gaugeAngleOffset + rigidbody.velocity.magnitude / topSpeed * (180 + gaugeAngleOffset), arrowPos);
+        GUI.DrawTexture(new Rect(arrowPos.x - arrowSize.x/2, arrowPos.y - arrowSize.y/2, arrowSize.x, arrowSize.y), arrow);
+        GUI.matrix = backupMatrix;
     }
 
     void DrawLeaderboard()
@@ -473,9 +478,10 @@ public class Car : MonoBehaviour
         Vector2 minimapSize = Vector2.Scale(new Vector2(minimap.width, minimap.height), minimapScale);
         Vector2 relativePos = transform.ToV2() - minimapStartOffset;
         relativePos = new Vector2(relativePos.x / trackSize.x, relativePos.y / trackSize.y); //[0..1]
-        Vector2 minimapPos = Vector2.Scale(relativePos, minimapSize);
+        Vector2 minimapPos = Vector2.Scale(relativePos, minimapSize); //[0..minimapSize]
         GUI.DrawTexture(new Rect(0, Screen.height - minimapSize.y, minimapSize.x, minimapSize.y), minimap);
-        GUI.DrawTexture(new Rect(minimapPos.x - minimapChar.width / 2, minimapPos.y - minimapChar.height / 2, minimapChar.width, minimapChar.height), minimapChar);
+        if(minimapChar)
+            GUI.DrawTexture(new Rect(minimapPos.x - minimapChar.width / 2, minimapPos.y - minimapChar.height / 2, minimapChar.width, minimapChar.height), minimapChar);
     }
 
     //===========================================================================
