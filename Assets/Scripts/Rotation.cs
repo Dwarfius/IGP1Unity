@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Rotation : MonoBehaviour 
 {
-    public float rorationSpeed;
+    public float rorationSpeed  = 20;
 
 	void Update () 
     {

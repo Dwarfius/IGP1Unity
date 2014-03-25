@@ -32,19 +32,18 @@ public static class Utilities
 
     public static GameObject GetPrefab(this Cars car)
     {
-        return (GameObject)Resources.Load("Prefabs/Bucket Car");
         if (car == Cars.Serpent)
-            return (GameObject)Resources.Load("Prefabs/Serpent Car");
+            return (GameObject)Resources.Load("Prefabs/Cars/Snake Car");
         else if (car == Cars.Popcorn)
-            return (GameObject)Resources.Load("Prefabs/Popcorn Car");
+            return (GameObject)Resources.Load("Prefabs/Cars/Popcorn Car");
         else if (car == Cars.Janitor)
-            return (GameObject)Resources.Load("Prefabs/Janitor Car");
+            return (GameObject)Resources.Load("Prefabs/Cars/Bucket Car");
         else if (car == Cars.Gorilla)
-            return (GameObject)Resources.Load("Prefabs/Gorilla Car");
+            return (GameObject)Resources.Load("Prefabs/Cars/Banana Car");
         else if (car == Cars.French)
-            return (GameObject)Resources.Load("Prefabs/French Car");
+            return (GameObject)Resources.Load("Prefabs/Cars/French Car");
         else
-            return (GameObject)Resources.Load("Prefabs/Popcorn Car");
+            return (GameObject)Resources.Load("Prefabs/Cars/Bottle Car");
     }
 
     public static Texture2D GetMinimapTexture(this Cars car)

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class CInput : MonoBehaviour 
+public class CInput 
 {
     static Dictionary<string, KeyCode> keyBindings = new Dictionary<string, KeyCode>();
     static bool initialised;

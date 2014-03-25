@@ -21,7 +21,6 @@ public class Car : MonoBehaviour
     public float topSpeed = 160;
     public float maximumTurn = 10, minimumTurn = 3, resetTime = 3;
     public Transform centerOfMass;
-    public Texture2D minimap, gauge, arrow;
     public Vector2 minimapStartOffset, trackSize, minimapScale, gaugeScale, arrowScale;
     public float gaugeAngleOffset;
         
@@ -34,16 +33,20 @@ public class Car : MonoBehaviour
     bool handbrake, canDrive, canSteer;
     bool inMenu;
     int currentGear;
-    Texture2D blackText;
+    Texture2D blackText, gauge, arrow;
     Line currentSegm = null;
 
     protected float currentEnginePower, throttle;
     protected float handbrakeTime, steer, initialDragMultiplierX, resetTimer;
     protected Wheel[] wheels;
-    protected Texture2D minimapChar;
+    protected Texture2D minimapChar, minimap;
 
 	public virtual void Start () 
     {
+        minimap = (Texture2D)Resources.Load("Textures/minimap");
+        gauge = (Texture2D)Resources.Load("Textures/speedometer");
+        arrow = (Texture2D)Resources.Load("Textures/arrow");
+
         minimapChar = Utilities.GetMinimapTexture(car);
         blackText = new Texture2D(1, 1);
         blackText.SetPixel(0, 0, new Color(0, 0, 0, 0.5f));
@@ -395,12 +398,7 @@ public class Car : MonoBehaviour
         foreach(Wheel w in wheels)
         {
             if (w.steerWheel)
-            {
                 w.col.steerAngle = turn * steer;
-                Vector3 angle = w.wheelGraphic.localEulerAngles;
-                angle.y = steer * 15;
-                w.wheelGraphic.localEulerAngles = angle;
-            }
         }
 
         if(initialDragMultiplierX > dragMultiplier.x) //handbrake

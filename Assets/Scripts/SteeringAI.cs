@@ -9,6 +9,24 @@ public class SteeringAI : Car
     int projectedWaypoint;
     Line projectedSegm;
 
+    public void InitWithCarScript(Car script)
+    {
+        car = script.car;
+        frontWheels = (Transform[])script.frontWheels.Clone();
+        backWheels = (Transform[])script.backWheels.Clone();
+        slipValue = script.slipValue;
+        stiffnesCoeff = script.stiffnesCoeff;
+        gears = script.gears;
+        topSpeed = script.topSpeed;
+        maximumTurn = script.maximumTurn;
+        minimumTurn = script.minimumTurn;
+        resetTime = script.resetTime;
+        centerOfMass = script.centerOfMass;
+        minimapStartOffset = script.minimapStartOffset;
+        trackSize = script.trackSize;
+        minimapScale = script.minimapScale;
+    }
+
     public override void Start()
     {
         base.Start();
@@ -129,6 +147,8 @@ public class SteeringAI : Car
 
     void DrawMinimap()
     {
+        if (minimapChar == null)
+            return;
         Vector2 minimapSize = Vector2.Scale(new Vector2(minimap.width, minimap.height), minimapScale);
         Vector2 relativePos = transform.ToV2() - minimapStartOffset;
         relativePos = new Vector2(relativePos.x / trackSize.x, relativePos.y / trackSize.y); //[0..1]

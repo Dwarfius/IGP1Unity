@@ -1,0 +1,560 @@
+fileFormatVersion: 2
+guid: 76171df8c62492c448ad9621327587b6
+ModelImporter:
+  fileIDToRecycleName:
+    4300000: janitor1
+    4300002: hat
+    4300004: belt
+    4300006: eyesjanitor1
+    4300008: eyesjanitor2
+    4300010: eyebrows
+    4300012: eyelashes
+    4300014: hairjanitor
+    4300016: Cylinder001
+    4300018: Line009
+    7400000: Take 001 //// janitorpose
+  serializedVersion: 10
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    generateAnimations: 3
+    bakeSimulation: 0
+    splitAnimations: 1
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    clipAnimations: []
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .00999999978
+    meshCompression: 0
+    addColliders: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMesh: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  textMetaNamesToFileIDs:
+    //RootNode:
+      data:
+        first: 1
+        second: d8860100
+      data:
+        first: 4
+        second: b81a0600
+      data:
+        first: 111
+        second: 605fa900
+    Cylinder001:
+      data:
+        first: 1
+        second: ee860100
+      data:
+        first: 4
+        second: ce1a0600
+      data:
+        first: 23
+        second: 70182300
+      data:
+        first: 33
+        second: b05a3200
+    HEADTOP:
+      data:
+        first: 1
+        second: b0860100
+      data:
+        first: 4
+        second: 901a0600
+    Line009:
+      data:
+        first: 1
+        second: ba860100
+      data:
+        first: 4
+        second: 9a1a0600
+      data:
+        first: 23
+        second: 66182300
+      data:
+        first: 33
+        second: a65a3200
+    Particle View 001:
+      data:
+        first: 1
+        second: 02870100
+      data:
+        first: 4
+        second: e21a0600
+    alkune:
+      data:
+        first: 1
+        second: 14870100
+      data:
+        first: 4
+        second: f41a0600
+    alkune2:
+      data:
+        first: 1
+        second: fa860100
+      data:
+        first: 4
+        second: da1a0600
+    belt:
+      data:
+        first: 1
+        second: b2860100
+      data:
+        first: 4
+        second: 921a0600
+      data:
+        first: 23
+        second: 62182300
+      data:
+        first: 33
+        second: a25a3200
+    chest:
+      data:
+        first: 1
+        second: a8860100
+      data:
+        first: 4
+        second: 881a0600
+    eyebrows:
+      data:
+        first: 1
+        second: a0860100
+      data:
+        first: 4
+        second: 801a0600
+      data:
+        first: 23
+        second: 60182300
+      data:
+        first: 33
+        second: a05a3200
+    eyelashes:
+      data:
+        first: 1
+        second: d6860100
+      data:
+        first: 4
+        second: b61a0600
+      data:
+        first: 23
+        second: 6a182300
+      data:
+        first: 33
+        second: aa5a3200
+    eyesjanitor1:
+      data:
+        first: 1
+        second: de860100
+      data:
+        first: 4
+        second: be1a0600
+      data:
+        first: 23
+        second: 6c182300
+      data:
+        first: 33
+        second: ac5a3200
+    eyesjanitor2:
+      data:
+        first: 1
+        second: b8860100
+      data:
+        first: 4
+        second: 981a0600
+      data:
+        first: 23
+        second: 64182300
+      data:
+        first: 33
+        second: a45a3200
+    hairjanitor:
+      data:
+        first: 1
+        second: c0860100
+      data:
+        first: 4
+        second: a01a0600
+      data:
+        first: 23
+        second: 68182300
+      data:
+        first: 33
+        second: a85a3200
+    hat:
+      data:
+        first: 1
+        second: f6860100
+      data:
+        first: 4
+        second: d61a0600
+      data:
+        first: 23
+        second: 72182300
+      data:
+        first: 33
+        second: b25a3200
+    heAD:
+      data:
+        first: 1
+        second: 04870100
+      data:
+        first: 4
+        second: e41a0600
+    janitor1:
+      data:
+        first: 1
+        second: e4860100
+      data:
+        first: 4
+        second: c41a0600
+      data:
+        first: 23
+        second: 6e182300
+      data:
+        first: 33
+        second: ae5a3200
+    leg1:
+      data:
+        first: 1
+        second: bc860100
+      data:
+        first: 4
+        second: 9c1a0600
+    leg1 kulksnis:
+      data:
+        first: 1
+        second: ac860100
+      data:
+        first: 4
+        second: 8c1a0600
+    leg2:
+      data:
+        first: 1
+        second: ec860100
+      data:
+        first: 4
+        second: cc1a0600
+    leg2 kulksnis:
+      data:
+        first: 1
+        second: ea860100
+      data:
+        first: 4
+        second: ca1a0600
+    lower pelvis:
+      data:
+        first: 1
+        second: be860100
+      data:
+        first: 4
+        second: 9e1a0600
+    mazasis1:
+      data:
+        first: 1
+        second: ce860100
+      data:
+        first: 4
+        second: ae1a0600
+    mazasis1a:
+      data:
+        first: 1
+        second: cc860100
+      data:
+        first: 4
+        second: ac1a0600
+    mazasis1b:
+      data:
+        first: 1
+        second: c6860100
+      data:
+        first: 4
+        second: a61a0600
+    mazylis2:
+      data:
+        first: 1
+        second: e2860100
+      data:
+        first: 4
+        second: c21a0600
+    mazylis2a:
+      data:
+        first: 1
+        second: e0860100
+      data:
+        first: 4
+        second: c01a0600
+    mazylis2b:
+      data:
+        first: 1
+        second: e8860100
+      data:
+        first: 4
+        second: c81a0600
+    neck:
+      data:
+        first: 1
+        second: a6860100
+      data:
+        first: 4
+        second: 861a0600
+    nikstys1:
+      data:
+        first: 1
+        second: da860100
+      data:
+        first: 4
+        second: ba1a0600
+    nikstys1a:
+      data:
+        first: 1
+        second: 1e870100
+      data:
+        first: 4
+        second: fe1a0600
+    nikstys1b:
+      data:
+        first: 1
+        second: 1c870100
+      data:
+        first: 4
+        second: fc1a0600
+    nikstys2:
+      data:
+        first: 1
+        second: c2860100
+      data:
+        first: 4
+        second: a21a0600
+    nikstys2a:
+      data:
+        first: 1
+        second: ca860100
+      data:
+        first: 4
+        second: aa1a0600
+    nikstys2b:
+      data:
+        first: 1
+        second: c8860100
+      data:
+        first: 4
+        second: a81a0600
+    over the neck:
+      data:
+        first: 1
+        second: 06870100
+      data:
+        first: 4
+        second: e61a0600
+    peda pirstu galiukai:
+      data:
+        first: 1
+        second: fc860100
+      data:
+        first: 4
+        second: dc1a0600
+    peda1:
+      data:
+        first: 1
+        second: aa860100
+      data:
+        first: 4
+        second: 8a1a0600
+    peda1 antra dalis:
+      data:
+        first: 1
+        second: fe860100
+      data:
+        first: 4
+        second: de1a0600
+    peda2:
+      data:
+        first: 1
+        second: 0e870100
+      data:
+        first: 4
+        second: ee1a0600
+    peda2 vidurys:
+      data:
+        first: 1
+        second: 0c870100
+      data:
+        first: 4
+        second: ec1a0600
+    peda2pirstai:
+      data:
+        first: 1
+        second: f0860100
+      data:
+        first: 4
+        second: d01a0600
+    pelvis:
+      data:
+        first: 1
+        second: e6860100
+      data:
+        first: 4
+        second: c61a0600
+    petys:
+      data:
+        first: 1
+        second: ae860100
+      data:
+        first: 4
+        second: 8e1a0600
+    petys2:
+      data:
+        first: 1
+        second: f4860100
+      data:
+        first: 4
+        second: d41a0600
+    pinky1:
+      data:
+        first: 1
+        second: 0a870100
+      data:
+        first: 4
+        second: ea1a0600
+    pinky1a:
+      data:
+        first: 1
+        second: 08870100
+      data:
+        first: 4
+        second: e81a0600
+    pinky1b:
+      data:
+        first: 1
+        second: dc860100
+      data:
+        first: 4
+        second: bc1a0600
+    pinky2:
+      data:
+        first: 1
+        second: 12870100
+      data:
+        first: 4
+        second: f21a0600
+    pinky2a:
+      data:
+        first: 1
+        second: 10870100
+      data:
+        first: 4
+        second: f01a0600
+    pinky2b:
+      data:
+        first: 1
+        second: d4860100
+      data:
+        first: 4
+        second: b41a0600
+    plastaka:
+      data:
+        first: 1
+        second: b6860100
+      data:
+        first: 4
+        second: 961a0600
+    plastaka2:
+      data:
+        first: 1
+        second: f8860100
+      data:
+        first: 4
+        second: d81a0600
+    plastakos galas:
+      data:
+        first: 1
+        second: b4860100
+      data:
+        first: 4
+        second: 941a0600
+    plastakos galas2:
+      data:
+        first: 1
+        second: 00870100
+      data:
+        first: 4
+        second: e01a0600
+    pointer1:
+      data:
+        first: 1
+        second: c4860100
+      data:
+        first: 4
+        second: a41a0600
+    pointer1a:
+      data:
+        first: 1
+        second: 1a870100
+      data:
+        first: 4
+        second: fa1a0600
+    pointer1b:
+      data:
+        first: 1
+        second: 18870100
+      data:
+        first: 4
+        second: f81a0600
+    pointer2:
+      data:
+        first: 1
+        second: d2860100
+      data:
+        first: 4
+        second: b21a0600
+    pointer2a:
+      data:
+        first: 1
+        second: a4860100
+      data:
+        first: 4
+        second: 841a0600
+    pointer2b:
+      data:
+        first: 1
+        second: a2860100
+      data:
+        first: 4
+        second: 821a0600
+    ranka1:
+      data:
+        first: 1
+        second: 16870100
+      data:
+        first: 4
+        second: f61a0600
+    ranka2:
+      data:
+        first: 1
+        second: f2860100
+      data:
+        first: 4
+        second: d21a0600
+    stomack:
+      data:
+        first: 1
+        second: d0860100
+      data:
+        first: 4
+        second: b01a0600

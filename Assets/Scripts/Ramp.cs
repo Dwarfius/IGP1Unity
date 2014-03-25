@@ -32,7 +32,7 @@ public class Ramp : MonoBehaviour
         if (other.tag == "Car")
         {
             other.rigidbody.constraints = RigidbodyConstraints.None;
-            if (other.GetComponent<Car>().car == (Cars)GameStorage.Instance.carIndex && followCamera) //if it's the player car
+            if ((GameStorage.Instance.carIndex == -1 || other.GetComponent<Car>().car == (Cars)GameStorage.Instance.carIndex) && followCamera) //if it's the player car
             {
                 FollowCamera script = followCamera.GetComponent<FollowCamera>();
                 script.target = other.transform;

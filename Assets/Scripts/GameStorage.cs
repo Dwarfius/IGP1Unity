@@ -36,7 +36,7 @@ public class GameStorage : MonoBehaviour
     #endregion
 
     public CarStorage[] cars = null;
-    public int carIndex;
+    public int carIndex = -1;
     public bool canUpdate;
 
     float circleDist;
@@ -74,17 +74,21 @@ public class GameStorage : MonoBehaviour
                 while (WasUsed(type, usedIndices))
                     type = potentialTypes[Random.Range(0, 5)];
                 usedIndices[i] = type;
+
                 GameObject car = (GameObject)Instantiate(((Cars)type).GetPrefab(), positions[i].position, Quaternion.identity);
-                cars[i].carScript = car.GetComponent<SteeringAI>();
+
+                Car carScript = car.GetComponent<Car>();
+                cars[i].carScript = car.AddComponent<SteeringAI>();
+                (cars[i].carScript as SteeringAI).InitWithCarScript(carScript);
+                Destroy(carScript);
+
                 cars[i].carName = (Cars)type;
-                cars[i].carScript.car = cars[i].carName; //just a precaution
                 cars[i].carScript.enabled = true;
                 car.name = cars[i].carName.ToString();
             }
 
             //spawning player on last position
             GameObject playerCar = (GameObject)Instantiate(((Cars)carIndex).GetPrefab(), positions[5].position, Quaternion.identity);
-            Destroy(playerCar.GetComponent<SteeringAI>());
             cars[5].carScript = playerCar.GetComponent<Car>();
             cars[5].carName = (Cars)carIndex;
             cars[5].carScript.car = cars[5].carName; //same, just a precaution
