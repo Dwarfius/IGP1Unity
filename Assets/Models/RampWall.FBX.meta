@@ -1,16 +1,16 @@
 fileFormatVersion: 2
-guid: b57660c5d1a9a9f4ba6fcb169e84f08c
+guid: c2c095fcd2cd5264687f605f4de32c53
 ModelImporter:
   fileIDToRecycleName:
-    4300000: Loft002
-    7400000: Take 001 //// ramp (1)
+    4300000: Helix001
+    7400000: Take 001 //// RampWall
   serializedVersion: 10
   materials:
     importMaterials: 1
     materialName: 0
     materialSearch: 1
   animations:
-    generateAnimations: 0
+    generateAnimations: 3
     bakeSimulation: 0
     splitAnimations: 1
     animationCompression: 1
@@ -51,3 +51,6 @@ ModelImporter:
       data:
         first: 33
         second: a05a3200
+      data:
+        first: 111
+        second: 605fa900

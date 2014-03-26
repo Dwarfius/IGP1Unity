@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 23d088ba55f344149b7001fb68e535f9
+guid: 6ec34a73ff3a23a499dac9ad73d74750
 ModelImporter:
   fileIDToRecycleName:
     4300000: Loft001
@@ -45,25 +45,11 @@ ModelImporter:
         first: 4
         second: 801a0600
       data:
-        first: 111
-        second: 605fa900
-    Loft001:
-      data:
-        first: 1
-        second: a2860100
-      data:
-        first: 4
-        second: 821a0600
-      data:
         first: 23
         second: 60182300
       data:
         first: 33
         second: a05a3200
-    Rectangle001:
       data:
-        first: 1
-        second: a4860100
-      data:
-        first: 4
-        second: 841a0600
+        first: 111
+        second: 605fa900
