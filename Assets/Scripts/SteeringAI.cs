@@ -22,7 +22,6 @@ public class SteeringAI : Car
         minimumTurn = script.minimumTurn;
         resetTime = script.resetTime;
         centerOfMass = script.centerOfMass;
-        minimapScale = script.minimapScale;
         charScale = script.charScale;
     }
 

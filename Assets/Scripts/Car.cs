@@ -5,6 +5,7 @@ using System.Collections;
 public class Car : MonoBehaviour 
 {
     WheelFrictionCurve forwardCurve, sidewaysCurve;
+    public static Vector2 minimapScale = new Vector2(0.4f, 0.4f);
 
     public class Wheel
     {
@@ -21,7 +22,7 @@ public class Car : MonoBehaviour
     public float topSpeed = 160;
     public float maximumTurn = 10, minimumTurn = 3, resetTime = 3;
     public Transform centerOfMass;
-    public Vector2 minimapScale, charScale, gaugeScale, arrowScale;
+    public Vector2 charScale, gaugeScale, arrowScale;
     public float gaugeAngleOffset;
         
     [HideInInspector] public int currentWaypoint;

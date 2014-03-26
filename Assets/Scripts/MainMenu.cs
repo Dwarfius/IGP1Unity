@@ -22,6 +22,7 @@ public class MainMenu : MonoBehaviour
     public float rotationTime;
     public float rotationSpeed;
     public GUISkin skin;
+    public Texture2D background;
     public Texture2D ticketImg;
     public Texture2D progressBar;
     public Vector2 pos, size;
@@ -94,6 +95,7 @@ public class MainMenu : MonoBehaviour
     void OnGUI()
     {
         GUI.skin = skin;
+        GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), background);
         if (state == State.MainMenu)
             DrawMenu();
         else if (state == State.Options)
