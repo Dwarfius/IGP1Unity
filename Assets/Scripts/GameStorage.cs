@@ -35,11 +35,18 @@ public class GameStorage : MonoBehaviour
     }
     #endregion
 
+    public static float minimapX1 = 190, minimapX2 = 1796, minimapY1 = 449, minimapY2 = 1580;
+    public static int lapsToFinish = 1;
+
     public CarStorage[] cars = null;
     public int carIndex = -1;
     public bool canUpdate;
+    public GUISkin skin;
+    public bool ticketFound;
+    public int ticketAmount;
 
     float circleDist;
+    Texture2D displayTexture, red, yellow, green;
 
     void OnLevelWasLoaded(int level)
     {
@@ -151,23 +158,37 @@ public class GameStorage : MonoBehaviour
     {
         for (int i = 0; i < cars.Length; i++)
         {
-            if (cars[i].carName == carType)
-                cars[i].lap++;
+            if (cars[i].carName == carType && ++cars[i].lap >= lapsToFinish)
+                cars[i].carScript.finished = true;
         }
+    }
+
+    public bool IsFirst(Cars carType)
+    {
+        return cars[0].carName == carType;
+    }
+
+    public void FinishGame(bool ticketFound, bool retry)
+    {
+        
     }
 
     IEnumerator StartCounter()
     {
-        float time = 3;
+        foreach (CarStorage car in cars)
+            car.carScript.rigidbody.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
+        float time = 4;
         while ((time -= 1) > 0)
         {
-            if (time == 2)
+            if (time == 3)
                 Debug.Log("Ready");
-            else if (time == 1)
+            else if (time == 2)
                 Debug.Log("Steady");
             else
             {
                 Debug.Log("Go");
+                foreach (CarStorage car in cars)
+                    car.carScript.rigidbody.constraints = RigidbodyConstraints.None;
             }
             yield return new WaitForSeconds(1);
         }

@@ -49,16 +49,16 @@ public static class Utilities
     public static Texture2D GetMinimapTexture(this Cars car)
     {
         if(car == Cars.Serpent)
-            return (Texture2D)Resources.Load("Textures/Serpent Minimap");
+            return (Texture2D)Resources.Load("Textures/snake bubble");
         else if(car == Cars.Popcorn)
-            return (Texture2D)Resources.Load("Textures/Popcorn Minimap");
+            return (Texture2D)Resources.Load("Textures/popcorn bubble");
         else if(car == Cars.Janitor)
-            return (Texture2D)Resources.Load("Textures/Janitor Minimap");
+            return (Texture2D)Resources.Load("Textures/janitor bubble");
         else if(car == Cars.Gorilla)
-            return (Texture2D)Resources.Load("Textures/Gorilla Minimap");
+            return (Texture2D)Resources.Load("Textures/gorilla bubble");
         else if(car == Cars.French)
-            return (Texture2D)Resources.Load("Textures/French Minimap");
+            return (Texture2D)Resources.Load("Textures/french bubble");
         else
-            return (Texture2D)Resources.Load("Textures/Cola Minimap");
+            return (Texture2D)Resources.Load("Textures/cola bubble");
     }
 }

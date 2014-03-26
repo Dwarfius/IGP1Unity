@@ -21,7 +21,7 @@ public class MainMenu : MonoBehaviour
     public Vector3[] carPositions;
     public float rotationTime;
     public float rotationSpeed;
-    public GUIStyle btnStyle, boxStyle;
+    public GUISkin skin;
 
     int selectedCar = 1, switchFlag;
     State state = State.MainMenu;
@@ -31,6 +31,7 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
+        GameStorage.Instance.skin = skin;
         keyBinds = CInput.GetKeyBindings();
         for (int i = 0; i < carPositions.Length; i++)
         {
@@ -88,6 +89,7 @@ public class MainMenu : MonoBehaviour
 
     void OnGUI()
     {
+        GUI.skin = skin;
         if (state == State.MainMenu)
             DrawMenu();
         else if (state == State.Options)
@@ -103,7 +105,7 @@ public class MainMenu : MonoBehaviour
     void DrawMenu()
     {
         float x = Screen.width / 2, y = Screen.height / 2;
-        if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Play The Game", btnStyle))
+        if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Play The Game"))
         {
             state = State.KartSelect;
             foreach (CarStorage carStorage in cars)
@@ -111,34 +113,34 @@ public class MainMenu : MonoBehaviour
         }
 
         y += btnSize.y + btnSize.z;
-        if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Options", btnStyle))
+        if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Options"))
             state = State.Options;
 
         y += btnSize.y + btnSize.z;
-        if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Exit", btnStyle))
+        if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Exit"))
             Application.Quit();
     }
 
     void DrawOptions()
     {
         float x = Screen.width / 5, y = Screen.height / 10;
-        GUI.Label(new Rect((Screen.width - btnSize.x) / 2, y, btnSize.x, btnSize.y), "Hotkeys", boxStyle);
+        GUI.Label(new Rect((Screen.width - btnSize.x) / 2, y, btnSize.x, btnSize.y), "Hotkeys");
 
         y += btnSize.y + btnSize.z;
         foreach(KeyValuePair<string, KeyCode> pair in keyBinds)
         {
-            GUI.Label(new Rect(x, y, btnSize.x, btnSize.y), pair.Key, boxStyle);
+            GUI.Label(new Rect(x, y, btnSize.x, btnSize.y), pair.Key);
             string dispString = (string.IsNullOrEmpty(editingKey) || !editingKey.Equals(pair.Key) ? pair.Value.ToString() : "Press Any Key");
-            if (GUI.Button(new Rect(4 * x - btnSize.x, y, btnSize.x, btnSize.y), dispString, btnStyle) && string.IsNullOrEmpty(editingKey))
+            if (GUI.Button(new Rect(4 * x - btnSize.x, y, btnSize.x, btnSize.y), dispString) && string.IsNullOrEmpty(editingKey))
                 editingKey = pair.Key;
             y += btnSize.y + btnSize.z;
         }
 
-        if (GUI.Button(new Rect((Screen.width - btnSize.x) / 2, y, btnSize.x, btnSize.y), "Reset", btnStyle))
+        if (GUI.Button(new Rect((Screen.width - btnSize.x) / 2, y, btnSize.x, btnSize.y), "Reset"))
             CInput.Reset();
 
         y += btnSize.y + btnSize.z;
-        if (GUI.Button(new Rect((Screen.width - btnSize.x) / 2, y, btnSize.x, btnSize.y), "Back", btnStyle))
+        if (GUI.Button(new Rect((Screen.width - btnSize.x) / 2, y, btnSize.x, btnSize.y), "Back"))
             state = State.MainMenu;
     }
 
@@ -155,13 +157,13 @@ public class MainMenu : MonoBehaviour
         if (keyBinds.TryGetValue("Left", out leftKey))
             prevString = "Prev (" + leftKey + ")";
 
-        if (GUI.Button(new Rect(xLeft, y, btnSize.x, btnSize.y), nextString, btnStyle) && switchFlag == 0)
+        if (GUI.Button(new Rect(xLeft, y, btnSize.x, btnSize.y), nextString) && switchFlag == 0)
         {
             if (++selectedCar == cars.Length)
                 selectedCar = 0;
             switchFlag = -1;
         }
-        else if (GUI.Button(new Rect(xRight, y, btnSize.x, btnSize.y), prevString, btnStyle) && switchFlag == 0)
+        else if (GUI.Button(new Rect(xRight, y, btnSize.x, btnSize.y), prevString) && switchFlag == 0)
         {
             if (--selectedCar == -1)
                 selectedCar = cars.Length - 1;
@@ -170,14 +172,14 @@ public class MainMenu : MonoBehaviour
 
         float x = Screen.width / 2; 
         y = Screen.height / 10;
-        if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Play", btnStyle))
+        if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Play"))
         {
             GameStorage.Instance.carIndex = selectedCar;
             Application.LoadLevel(1);
         }
 
         y += btnSize.y + btnSize.z;
-        if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Back", btnStyle))
+        if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Back"))
         {
             state = State.MainMenu;
             foreach (CarStorage carStorage in cars)
@@ -185,7 +187,7 @@ public class MainMenu : MonoBehaviour
         }
 
         y += btnSize.y + btnSize.z;
-        GUI.Box(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Car: " + cars[selectedCar].name, boxStyle);
+        GUI.Box(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Car: " + cars[selectedCar].name);
     }
 
     void OnDrawGizmos()

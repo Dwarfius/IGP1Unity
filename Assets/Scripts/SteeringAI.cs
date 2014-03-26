@@ -22,9 +22,8 @@ public class SteeringAI : Car
         minimumTurn = script.minimumTurn;
         resetTime = script.resetTime;
         centerOfMass = script.centerOfMass;
-        minimapStartOffset = script.minimapStartOffset;
-        trackSize = script.trackSize;
         minimapScale = script.minimapScale;
+        charScale = script.charScale;
     }
 
     public override void Start()
@@ -137,7 +136,7 @@ public class SteeringAI : Car
                     t = 0;
                     rigidbody.velocity = Vector3.zero;
                     rigidbody.angularVelocity = Vector3.zero;
-                    transform.position = projectedSegm.aTrans.position;
+                    transform.position = projectedSegm.aTrans.position + Vector3.up;
                     transform.LookAt(projectedSegm.bTrans);
                 }
             }
@@ -149,10 +148,12 @@ public class SteeringAI : Car
     {
         if (minimapChar == null)
             return;
+
         Vector2 minimapSize = Vector2.Scale(new Vector2(minimap.width, minimap.height), minimapScale);
         Vector2 relativePos = transform.ToV2() - minimapStartOffset;
         relativePos = new Vector2(relativePos.x / trackSize.x, relativePos.y / trackSize.y); //[0..1]
         Vector2 minimapPos = Vector2.Scale(relativePos, minimapSize); //[0..minimapSize]
-        GUI.DrawTexture(new Rect(minimapPos.x - minimapChar.width / 2, minimapPos.y - minimapChar.height / 2, minimapChar.width, minimapChar.height), minimapChar);
+        Vector2 charSize = Vector2.Scale(new Vector2(minimapChar.width, minimapChar.height), charScale);
+        GUI.DrawTexture(new Rect(minimapPos.x - charSize.x / 2, Screen.height - minimapPos.y - charSize.y / 2, charSize.x, charSize.y), minimapChar);
     }
 }
