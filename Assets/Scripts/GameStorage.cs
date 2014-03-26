@@ -18,6 +18,7 @@ public class GameStorage : MonoBehaviour
             {
                 GameObject go = new GameObject("GameStorage");
                 instance = go.AddComponent<GameStorage>();
+                instance.Init();
                 DontDestroyOnLoad(go);
             }
             return instance;
@@ -29,6 +30,7 @@ public class GameStorage : MonoBehaviour
     public class CarStorage
     {
         public int lap;
+        public float time;
         public float distance;
         public Cars carName;
         public Car carScript;
@@ -37,6 +39,7 @@ public class GameStorage : MonoBehaviour
 
     public static float minimapX1 = 190, minimapX2 = 1796, minimapY1 = 449, minimapY2 = 1580;
     public static int lapsToFinish = 1;
+    public static int ticketsMax = 20;
 
     public CarStorage[] cars = null;
     public int carIndex = -1;
@@ -46,7 +49,16 @@ public class GameStorage : MonoBehaviour
     public int ticketAmount;
 
     float circleDist;
-    Texture2D displayTexture, red, yellow, green;
+    Texture2D red, yellow, green, background;
+
+    public void Init()
+    {
+        red = (Texture2D)Resources.Load("Textures/redlight");
+        yellow = (Texture2D)Resources.Load("Textures/yellowlight");
+        green = (Texture2D)Resources.Load("Textures/greenlight");
+        background = (Texture2D)Resources.Load("Textures/light background");
+        ticketAmount = PlayerPrefs.GetInt("Tickets");
+    }
 
     void OnLevelWasLoaded(int level)
     {
@@ -108,7 +120,11 @@ public class GameStorage : MonoBehaviour
             canUpdate = true;
         }
         else
+        {
             canUpdate = false;
+            if (level == 0)
+                Camera.main.gameObject.GetComponent<MainMenu>().state = MainMenu.State.Ticket;
+        }
     }
 
     void Update()
@@ -130,12 +146,36 @@ public class GameStorage : MonoBehaviour
 
             for (int i = 0; i < cars.Length; i++) //derp sort
             {
-                for (int j = i + 1; j < cars.Length; j++)
+                if (!cars[i].carScript.finished)
                 {
-                    if (cars[i].distance < cars[j].distance)
-                        Swap(i, j);
+                    for (int j = i + 1; j < cars.Length; j++)
+                    {
+                        if (cars[i].distance < cars[j].distance)
+                            Swap(i, j);
+                    }
                 }
             }
+        }
+    }
+
+    void OnGUI()
+    {
+        if (time > 0)
+        {
+            float xOffsetCoeff = 0.35f, yOffsetCoeff = 0.15f;
+            float xCoeff = 0.30f, yCoeff = 0.1f;
+            Rect rect = new Rect(Screen.width * xOffsetCoeff, Screen.height * yOffsetCoeff, Screen.width * xCoeff, Screen.height * yCoeff);
+            GUI.DrawTexture(rect, background);
+            float emptySpace = rect.width * 0.05f;
+            float y = rect.yMin + rect.height * 0.05f;
+            float height = rect.height - 2 * rect.height * 0.05f;
+            float width = (rect.width - emptySpace) / 3 - emptySpace;
+            if(time <= 3)
+                GUI.DrawTexture(new Rect(rect.xMin + emptySpace, y, width, height), red);
+            if(time <= 2)
+                GUI.DrawTexture(new Rect(rect.xMin + width + 2 * emptySpace, y, width, height), yellow);
+            if(time <= 1)
+                GUI.DrawTexture(new Rect(rect.xMin + 2 * width + 3 * emptySpace, y, width, height), green);
         }
     }
 
@@ -159,7 +199,10 @@ public class GameStorage : MonoBehaviour
         for (int i = 0; i < cars.Length; i++)
         {
             if (cars[i].carName == carType && ++cars[i].lap >= lapsToFinish)
+            {
                 cars[i].carScript.finished = true;
+                cars[i].time = Time.timeSinceLevelLoad - cars[i].time;
+            }
         }
     }
 
@@ -170,25 +213,28 @@ public class GameStorage : MonoBehaviour
 
     public void FinishGame(bool ticketFound, bool retry)
     {
-        
+        if (ticketFound && ticketAmount < 20)
+        {
+            PlayerPrefs.SetInt("Tickets", ++ticketAmount);
+            PlayerPrefs.Save();
+        }
+        Application.LoadLevel(0);
     }
-
+    float time;
     IEnumerator StartCounter()
     {
         foreach (CarStorage car in cars)
             car.carScript.rigidbody.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
-        float time = 4;
+        time = 5;
         while ((time -= 1) > 0)
         {
-            if (time == 3)
-                Debug.Log("Ready");
-            else if (time == 2)
-                Debug.Log("Steady");
-            else
+            if(time == 1)
             {
-                Debug.Log("Go");
                 foreach (CarStorage car in cars)
+                {
                     car.carScript.rigidbody.constraints = RigidbodyConstraints.None;
+                    car.time = Time.timeSinceLevelLoad;
+                }
             }
             yield return new WaitForSeconds(1);
         }

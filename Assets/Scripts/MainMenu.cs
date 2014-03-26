@@ -13,7 +13,7 @@ public class MainMenu : MonoBehaviour
         [HideInInspector] public int pos;
     }
     #endregion
-    enum State { MainMenu, Options, KartSelect }
+    public enum State { MainMenu, Options, KartSelect, Ticket }
 
     public Vector3 btnSize; //z contains the empty space
     public Vector2 btnCenterOffset;
@@ -22,9 +22,13 @@ public class MainMenu : MonoBehaviour
     public float rotationTime;
     public float rotationSpeed;
     public GUISkin skin;
+    public Texture2D ticketImg;
+    public Texture2D progressBar;
+    public Vector2 pos, size;
+
+    [HideInInspector] public State state = State.MainMenu;
 
     int selectedCar = 1, switchFlag;
-    State state = State.MainMenu;
     Dictionary<string, KeyCode> keyBinds;
     string editingKey = null;
     float counter = 0;
@@ -100,6 +104,8 @@ public class MainMenu : MonoBehaviour
         }
         else if (state == State.KartSelect)
             DrawKartSelect();
+        else if (state == State.Ticket)
+            DrawTicketScreen();
     }
 
     void DrawMenu()
@@ -188,6 +194,21 @@ public class MainMenu : MonoBehaviour
 
         y += btnSize.y + btnSize.z;
         GUI.Box(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Car: " + cars[selectedCar].name);
+    }
+
+    void DrawTicketScreen()
+    {
+        float xOffsetCoeff = 0.2f, yOffsetCoeff = 0.2f;
+        Rect imgRect = new Rect(Screen.width * xOffsetCoeff, Screen.height * yOffsetCoeff, Screen.width * (1 - xOffsetCoeff * 2), Screen.height * (1 - yOffsetCoeff * 2));
+
+        GUI.DrawTexture(imgRect, ticketImg);
+        float percent = GameStorage.Instance.ticketAmount / (float)GameStorage.ticketsMax;
+        Debug.Log(percent);
+        GUI.DrawTextureWithTexCoords(new Rect(imgRect.xMin + imgRect.width * pos.x, imgRect.yMin + imgRect.height * pos.y, imgRect.width * size.x * percent, imgRect.height * size.y),
+                                     progressBar,
+                                     new Rect(0, 0, percent, 1));
+        if (GUI.Button(new Rect(Screen.width / 2 - btnSize.x / 2, imgRect.yMax + btnSize.z, btnSize.x, btnSize.y), "Menu"))
+            state = State.MainMenu;
     }
 
     void OnDrawGizmos()

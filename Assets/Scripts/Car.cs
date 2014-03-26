@@ -99,7 +99,8 @@ public class Car : MonoBehaviour
 
         CalculateState();
         UpdateFriction(relativeVel);
-        UpdateDrag(relativeVel);
+        if(canDrive)
+            UpdateDrag(relativeVel);
         CalculateEnginePower(relativeVel);
         if (canDrive)
             ApplyThrottle(relativeVel);
@@ -220,7 +221,11 @@ public class Car : MonoBehaviour
     //Update functions
     void GetInput()
     {
-        if (CInput.GetKeyDown("Pause"))
+        if(Input.GetKey(KeyCode.L))
+            finished = true;
+        if (Input.GetKey(KeyCode.K))
+            finished = ticketFound = true;
+        if(CInput.GetKeyDown("Pause"))
         {
             inMenu = !inMenu;
             Time.timeScale = (inMenu ? 0 : 1);
@@ -503,7 +508,21 @@ public class Car : MonoBehaviour
         Vector2 center = new Vector2(Screen.width / 2, Screen.height / 2);
         Vector2 boxSize = new Vector2(Screen.width - Screen.width * 2 * emptySpaceScale, Screen.height - Screen.height * 2 * emptySpaceScale);
         Rect boxRect = new Rect(center.x - boxSize.x / 2, center.y - boxSize.y / 2, boxSize.x, boxSize.y);
-        GUI.Box(boxRect, "Test Test");
+
+        string b = "Result:\n";
+        for (int i = 0; i < 6; i++)
+        {
+            GameStorage.CarStorage carStorage = GameStorage.Instance.cars[i];
+            if (!carStorage.carScript.finished) //show only finished players
+                continue;
+
+            if (carStorage.carName == car) //if player
+                b += (i + 1) + ". " + carStorage.carName + " (Player) - " + carStorage.time + "\n";
+            else
+                b += (i + 1) + ". " + carStorage.carName + " - " + carStorage.time + "\n";
+        }
+        GUI.Box(boxRect, b);
+        
         float width = 125, height = 30, empty = 15;
         if (GUI.Button(new Rect(boxRect.xMax - (width + empty), boxRect.yMax - height - empty, width, height), "Continue"))
             GameStorage.Instance.FinishGame(ticketFound && GameStorage.Instance.IsFirst(car), false);
