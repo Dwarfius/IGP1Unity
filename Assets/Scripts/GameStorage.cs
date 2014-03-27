@@ -47,6 +47,7 @@ public class GameStorage : MonoBehaviour
     public GUISkin skin;
     public bool ticketFound;
     public int ticketAmount;
+    public Texture2D ticket;
 
     float circleDist;
     Texture2D red, yellow, green, background;
@@ -211,7 +212,7 @@ public class GameStorage : MonoBehaviour
         return cars[0].carName == carType;
     }
 
-    public void FinishGame(bool ticketFound, bool retry)
+    public void FinishGame(bool ticketFound)
     {
         if (ticketFound && ticketAmount < 20)
         {
@@ -220,6 +221,12 @@ public class GameStorage : MonoBehaviour
         }
         Application.LoadLevel(0);
     }
+
+    public void Retry()
+    {
+        Application.LoadLevel(1);
+    }
+
     float time;
     IEnumerator StartCounter()
     {

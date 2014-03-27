@@ -6,8 +6,8 @@ public class CInput
 {
     static Dictionary<string, KeyCode> keyBindings = new Dictionary<string, KeyCode>();
     static bool initialised;
-    static string[] keys = { "Up", "Down", "Left", "Right", "Brake", "Use Item", "Pause" };
-    static KeyCode[] defaultHotKeys = { KeyCode.W, KeyCode.S, KeyCode.A, KeyCode.D, KeyCode.Space, KeyCode.E, KeyCode.Escape };
+    static string[] keys =            { "Up",      "Down",    "Left",    "Right",   "Use Item",    "Pause" };
+    static KeyCode[] defaultHotKeys = { KeyCode.W, KeyCode.S, KeyCode.A, KeyCode.D, KeyCode.Space, KeyCode.Escape };
 
     static void Init()
     {

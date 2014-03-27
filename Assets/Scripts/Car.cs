@@ -26,7 +26,7 @@ public class Car : MonoBehaviour
     public float gaugeAngleOffset;
         
     [HideInInspector] public int currentWaypoint;
-    [HideInInspector] public bool finished;
+    [HideInInspector] public bool finished, hasPowerup;
 
     float handbrakeXDragFactor = 0.5f;
     float suspensionSpringFront = 18500, suspensionSpringRear = 9000, suspensionRange = 0.1f, suspensionDamper = 50;
@@ -35,7 +35,7 @@ public class Car : MonoBehaviour
     bool handbrake, canDrive, canSteer;
     bool inMenu, ticketFound;
     int currentGear;
-    Texture2D blackText, gauge, arrow;
+    Texture2D blackText, gauge, arrow, pickup;
     Line currentSegm = null;
     
     protected Vector2 minimapStartOffset, trackSize;
@@ -116,6 +116,7 @@ public class Car : MonoBehaviour
         {
             DrawMinimap();
             DrawSpeedometer();
+            DrawPickups();
             if (GameStorage.Instance != null && GameStorage.Instance.cars != null)
                 DrawLeaderboard();
         }
@@ -230,6 +231,10 @@ public class Car : MonoBehaviour
         {
             inMenu = !inMenu;
             Time.timeScale = (inMenu ? 0 : 1);
+        }
+        if (CInput.GetKeyDown("Use Item"))
+        {
+
         }
         throttle = CInput.GetAxis("Vertical");
         steer = CInput.GetAxis("Horizontal");
@@ -474,6 +479,16 @@ public class Car : MonoBehaviour
         GUI.matrix = backupMatrix;
     }
 
+    void DrawPickups()
+    {
+        float scaleCoeff = 0.05f;
+        Vector2 size = new Vector2(Screen.width * scaleCoeff, Screen.width * scaleCoeff);
+        if (hasPowerup)
+            GUI.DrawTexture(new Rect(Screen.width / 2 - size.x, 0, size.x, size.y), pickup);
+        if (GameStorage.Instance.ticketFound)
+            GUI.DrawTexture(new Rect(Screen.width / 2, 0, size.x, size.y), GameStorage.Instance.ticket);
+    }
+
     void DrawLeaderboard()
     {
         string b = "";
@@ -526,10 +541,10 @@ public class Car : MonoBehaviour
         
         float width = 125, height = 30, empty = 15;
         if (GUI.Button(new Rect(boxRect.xMax - (width + empty), boxRect.yMax - height - empty, width, height), "Continue"))
-            GameStorage.Instance.FinishGame(ticketFound && GameStorage.Instance.IsFirst(car), false);
+            GameStorage.Instance.FinishGame(ticketFound && GameStorage.Instance.IsFirst(car));
 
-        if(GUI.Button(new Rect(boxRect.xMax - (width + empty)*2, boxRect.yMax - height - empty, width, height), "Retry"))
-            GameStorage.Instance.FinishGame(false, true);
+        if (GUI.Button(new Rect(boxRect.xMax - (width + empty) * 2, boxRect.yMax - height - empty, width, height), "Retry"))
+            GameStorage.Instance.Retry();
     }
 
     //===========================================================================

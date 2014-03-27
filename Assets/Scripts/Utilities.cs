@@ -61,4 +61,20 @@ public static class Utilities
         else
             return (Texture2D)Resources.Load("Textures/cola bubble");
     }
+
+    public static Texture2D GetPickupTexture(this Cars car)
+    {
+        if (car == Cars.Serpent)
+            return (Texture2D)Resources.Load("Textures/snake pickup");
+        else if (car == Cars.Popcorn)
+            return (Texture2D)Resources.Load("Textures/popcorn pickup");
+        else if (car == Cars.Janitor)
+            return (Texture2D)Resources.Load("Textures/janitor pickup");
+        else if (car == Cars.Gorilla)
+            return (Texture2D)Resources.Load("Textures/gorilla pickup");
+        else if (car == Cars.French)
+            return (Texture2D)Resources.Load("Textures/french pickup");
+        else
+            return (Texture2D)Resources.Load("Textures/cola pickup");
+    }
 }
