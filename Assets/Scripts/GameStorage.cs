@@ -37,8 +37,8 @@ public class GameStorage : MonoBehaviour
     }
     #endregion
 
-    public static float minimapX1 = 190, minimapX2 = 1796, minimapY1 = 449, minimapY2 = 1580;
-    public static int lapsToFinish = 1;
+    public static float minimapX1 = 623, minimapX2 = 1772, minimapY1 = 107, minimapY2 = 1107;
+    public static int lapsToFinish = 3;
     public static int ticketsMax = 20;
 
     public CarStorage[] cars = null;
@@ -94,11 +94,12 @@ public class GameStorage : MonoBehaviour
                     type = potentialTypes[Random.Range(0, 5)];
                 usedIndices[i] = type;
 
-                GameObject car = (GameObject)Instantiate(((Cars)type).GetPrefab(), positions[i].position, Quaternion.identity);
+                GameObject car = (GameObject)Instantiate(((Cars)type).GetPrefab(), positions[i].position, positions[i].rotation);
 
                 Car carScript = car.GetComponent<Car>();
                 cars[i].carScript = car.AddComponent<SteeringAI>();
                 (cars[i].carScript as SteeringAI).InitWithCarScript(carScript);
+                cars[i].carScript.GetComponentInChildren<Camera>().enabled = false;
                 Destroy(carScript);
 
                 cars[i].carName = (Cars)type;
@@ -107,12 +108,11 @@ public class GameStorage : MonoBehaviour
             }
 
             //spawning player on last position
-            GameObject playerCar = (GameObject)Instantiate(((Cars)carIndex).GetPrefab(), positions[5].position, Quaternion.identity);
+            GameObject playerCar = (GameObject)Instantiate(((Cars)carIndex).GetPrefab(), positions[5].position, positions[5].rotation);
 
             cars[5].carScript = playerCar.GetComponent<Car>();
             cars[5].carName = (Cars)carIndex;
 
-            playerCar.GetComponentInChildren<Camera>().enabled = true;
             playerCar.name = cars[5].carName.ToString() + " - Player";
 
             StartCoroutine(StartCounter());
