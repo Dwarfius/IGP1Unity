@@ -58,6 +58,7 @@ public class GameStorage : MonoBehaviour
         yellow = (Texture2D)Resources.Load("Textures/yellowlight");
         green = (Texture2D)Resources.Load("Textures/greenlight");
         background = (Texture2D)Resources.Load("Textures/light background");
+        ticket = (Texture2D)Resources.Load("Textures/ticketcollected");
         ticketAmount = PlayerPrefs.GetInt("Tickets");
     }
 
@@ -212,12 +213,13 @@ public class GameStorage : MonoBehaviour
         return cars[0].carName == carType;
     }
 
-    public void FinishGame(bool ticketFound)
+    public void FinishGame(bool first)
     {
-        if (ticketFound && ticketAmount < 20)
+        if (first && ticketFound && ticketAmount < 20)
         {
             PlayerPrefs.SetInt("Tickets", ++ticketAmount);
             PlayerPrefs.Save();
+            ticketFound = false;
         }
         Application.LoadLevel(0);
     }

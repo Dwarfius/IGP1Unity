@@ -9,10 +9,10 @@ ModelImporter:
     materialName: 0
     materialSearch: 1
   animations:
-    generateAnimations: 3
+    generateAnimations: 0
     bakeSimulation: 0
     splitAnimations: 1
-    animationCompression: 1
+    animationCompression: 0
     animationRotationError: .5
     animationPositionError: .5
     animationScaleError: .5
@@ -20,7 +20,7 @@ ModelImporter:
     clipAnimations: []
   meshes:
     lODScreenPercentages: []
-    globalScale: .00999999978
+    globalScale: .25
     meshCompression: 0
     addColliders: 0
     swapUVChannels: 0
@@ -50,6 +50,3 @@ ModelImporter:
       data:
         first: 33
         second: a05a3200
-      data:
-        first: 111
-        second: 605fa900

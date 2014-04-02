@@ -16,6 +16,8 @@ public class Car : MonoBehaviour
     }
 
     public Cars car;
+    public GameObject powerupPrefab;
+    public Texture2D pickup;
     public Transform[] frontWheels, backWheels;
     public float slipValue = 300, stiffnesCoeff = 0.6f;
     public int gears = 5;
@@ -33,9 +35,9 @@ public class Car : MonoBehaviour
     Vector3 dragMultiplier = new Vector3(2, 5, 1);
     float[] engineForceValues, gearSpeeds;
     bool handbrake, canDrive, canSteer;
-    bool inMenu, ticketFound;
+    bool inMenu;
     int currentGear;
-    Texture2D blackText, gauge, arrow, pickup;
+    Texture2D blackText, gauge, arrow;
     Line currentSegm = null;
     
     protected Vector2 minimapStartOffset, trackSize;
@@ -196,7 +198,7 @@ public class Car : MonoBehaviour
             rigidbody.centerOfMass = centerOfMass.localPosition;
     }
 
-    void SetUpGears()
+    public void SetUpGears()
     {
         engineForceValues = new float[gears];
         gearSpeeds = new float[gears];
@@ -223,23 +225,56 @@ public class Car : MonoBehaviour
     //Update functions
     void GetInput()
     {
-        if(Input.GetKey(KeyCode.L))
-            finished = true;
-        if (Input.GetKey(KeyCode.K))
-            finished = ticketFound = true;
         if(CInput.GetKeyDown("Pause"))
         {
             inMenu = !inMenu;
             Time.timeScale = (inMenu ? 0 : 1);
         }
-        if (CInput.GetKeyDown("Use Item"))
-        {
 
-        }
+        if (hasPowerup && CInput.GetKeyDown("Use Item"))
+            UsePowerUp();
+
         throttle = CInput.GetAxis("Vertical");
         steer = CInput.GetAxis("Horizontal");
 
         CheckHandbrake();
+    }
+
+    protected void UsePowerUp()
+    {
+        if (car == Cars.Serpent)
+        {
+            BuffTopSpeed(1.5f, 10);
+        }
+        else if (car == Cars.Cola)
+        {
+            RaycastHit hit;
+            Ray ray = new Ray(transform.position - transform.forward * 10 + transform.up * 2, -transform.up);
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("Ground")))
+            {
+                GameObject spill = (GameObject)Instantiate(powerupPrefab, hit.point + hit.normal/8, Quaternion.identity);
+                spill.transform.LookAt(hit.point - hit.normal);
+            }
+        }
+        else if (car == Cars.Janitor)
+        {
+            ((GameObject)Instantiate(powerupPrefab)).GetComponentInChildren<Mop>().followT = transform;
+        }
+        else if (car == Cars.Gorilla)
+        {
+            StartCoroutine(SpawBananaOverTime(0.5f, 6, powerupPrefab));
+        }
+        else if (car == Cars.French)
+        {
+            StartCoroutine(SpawBaguetteOverTime(1, 5, powerupPrefab));
+        }
+        else //car == Cars.Popcorn
+        {
+            Instantiate(powerupPrefab, transform.position + transform.forward, transform.rotation);
+            Instantiate(powerupPrefab, transform.position + transform.forward - transform.right * 4, transform.rotation);
+            Instantiate(powerupPrefab, transform.position + transform.forward + transform.right * 4, transform.rotation);
+        }
+        hasPowerup = false;
     }
 
     protected void CheckWaypointSegm()
@@ -483,7 +518,7 @@ public class Car : MonoBehaviour
     {
         float scaleCoeff = 0.05f;
         Vector2 size = new Vector2(Screen.width * scaleCoeff, Screen.width * scaleCoeff);
-        if (hasPowerup)
+        if (hasPowerup && pickup)
             GUI.DrawTexture(new Rect(Screen.width / 2 - size.x, 0, size.x, size.y), pickup);
         if (GameStorage.Instance.ticketFound)
             GUI.DrawTexture(new Rect(Screen.width / 2, 0, size.x, size.y), GameStorage.Instance.ticket);
@@ -541,7 +576,7 @@ public class Car : MonoBehaviour
         
         float width = 125, height = 30, empty = 15;
         if (GUI.Button(new Rect(boxRect.xMax - (width + empty), boxRect.yMax - height - empty, width, height), "Continue"))
-            GameStorage.Instance.FinishGame(ticketFound && GameStorage.Instance.IsFirst(car));
+            GameStorage.Instance.FinishGame(GameStorage.Instance.IsFirst(car));
 
         if (GUI.Button(new Rect(boxRect.xMax - (width + empty) * 2, boxRect.yMax - height - empty, width, height), "Retry"))
             GameStorage.Instance.Retry();
@@ -552,5 +587,40 @@ public class Car : MonoBehaviour
     int Sign(float f)
     {
         return (f < 0 ? -1 : (f > 0 ? 1 : 0));
+    }
+
+    IEnumerator PerformAction(float t, System.Action act)
+    {
+        yield return new WaitForSeconds(t);
+        act();
+    }
+
+    public void BuffTopSpeed(float rate, float time)
+    {
+        topSpeed *= rate;
+        SetUpGears();
+        PerformAction(time, delegate { topSpeed /= rate; SetUpGears(); });
+    }
+
+    IEnumerator SpawBananaOverTime(float rate, int amount, GameObject item)
+    {
+        for (int i = 0; i < amount; i++)
+        {
+            ((GameObject)Instantiate(item, transform.position + transform.forward, transform.rotation)).GetComponent<Banana>().heading = transform.forward;
+            yield return new WaitForSeconds(rate);
+        }
+    }
+
+    IEnumerator SpawBaguetteOverTime(float rate, int amount, GameObject item)
+    {
+        for (int i = 0; i < amount; i++)
+        {
+            RaycastHit hit;
+            Ray ray = new Ray(transform.position - transform.forward + transform.up, -transform.up);
+            if(Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("Ground")))
+                Instantiate(item, hit.point + hit.normal / 5, transform.rotation);
+            
+            yield return new WaitForSeconds(rate);
+        }
     }
 }

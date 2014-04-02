@@ -10,19 +10,20 @@ public class PickUp : MonoBehaviour
     {
         if (other.tag == "Car")
         {
-            if (Random.Range(0, 1) < ticketChance)
+            if (Random.value < ticketChance)
                 GameStorage.Instance.ticketFound = true;
             else
                 other.GetComponent<Car>().hasPowerup = true;
-            renderer.enabled = false;
+            Utilities.EnableRenders(gameObject, false);
             collider.enabled = false;
+            StartCoroutine(Reactivate());
         }
     }
 
     IEnumerator Reactivate()
     {
         yield return new WaitForSeconds(resetTime);
-        renderer.enabled = true;
+        Utilities.EnableRenders(gameObject, true);
         collider.enabled = true;
     }
 }
