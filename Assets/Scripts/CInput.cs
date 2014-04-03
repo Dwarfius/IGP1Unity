@@ -62,6 +62,17 @@ public class CInput
         return false;
     }
 
+    public static KeyCode GetKeyRepresentation(string name)
+    {
+        if (!initialised)
+            Init();
+
+        KeyCode keyCode;
+        if (keyBindings.TryGetValue(name, out keyCode))
+            return keyCode;
+        return 0;
+    }
+
     public static bool GetKeyDown(string name)
     {
         if (!initialised)

@@ -518,8 +518,13 @@ public class Car : MonoBehaviour
     {
         float scaleCoeff = 0.05f;
         Vector2 size = new Vector2(Screen.width * scaleCoeff, Screen.width * scaleCoeff);
-        if (hasPowerup && pickup)
-            GUI.DrawTexture(new Rect(Screen.width / 2 - size.x, 0, size.x, size.y), pickup);
+        if (hasPowerup)
+        {
+            if(pickup)
+                GUI.DrawTexture(new Rect(Screen.width / 2 - size.x, 0, size.x, size.y), pickup);
+            else
+                GUI.Box(new Rect(Screen.width / 2 - size.x, 0, size.x, size.y), "Powerup (" + CInput.GetKeyRepresentation("Use Item") + ")");
+        }
         if (GameStorage.Instance.ticketFound)
             GUI.DrawTexture(new Rect(Screen.width / 2, 0, size.x, size.y), GameStorage.Instance.ticket);
     }
