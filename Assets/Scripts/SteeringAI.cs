@@ -4,7 +4,6 @@ using System.Collections;
 public class SteeringAI : Car 
 {
     const float timerConst = 1.25f;
-    public bool userOverride;
     float timer;
     int projectedWaypoint;
     Line projectedSegm;
@@ -23,6 +22,7 @@ public class SteeringAI : Car
         resetTime = script.resetTime;
         centerOfMass = script.centerOfMass;
         charScale = script.charScale;
+        powerupPrefab = script.powerupPrefab;
     }
 
     public override void Start()
@@ -35,13 +35,7 @@ public class SteeringAI : Car
     public override void Update()
     {
         CheckWaypointSegm();
-        if (userOverride && (CInput.GetAxis("Horizontal") != 0 || CInput.GetAxis("Vertical") != 0))
-        {
-            throttle = CInput.GetAxis("Vertical");
-            steer = CInput.GetAxis("Horizontal");
-        }
-        else
-            MakeDecision();
+        MakeDecision();
         CheckIfFlipped();
         Vector3 relativeVel = transform.InverseTransformDirection(rigidbody.velocity);
         UpdateGear(relativeVel);
@@ -109,6 +103,23 @@ public class SteeringAI : Car
             timer -= Time.deltaTime;
         }
         Debug.DrawLine(new Vector3(projectedPos.x, transform.position.y, projectedPos.z), new Vector3(newPoint.x, transform.position.y, newPoint.y), color);
+
+        //ability
+        if (hasPowerup)
+        {
+            if (car == Cars.Serpent || car == Cars.Cola || car == Cars.French || car == Cars.Janitor)
+                UsePowerUp();
+            else //gorilla or popcorn
+            {
+                RaycastHit hit;
+                Ray ray = new Ray(transform.position, transform.forward);
+                if (Physics.SphereCast(ray, 3, out hit, 40, 1 << LayerMask.NameToLayer("Cars")))
+                {
+                    UsePowerUp();
+                    Debug.Log(hit.collider.gameObject.name);
+                }
+            }
+        }
     }
 
     void OnCollisionEnter(Collision other)

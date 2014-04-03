@@ -35,7 +35,6 @@ public class Ramp : MonoBehaviour
             if (other.GetComponent<Car>().car == (Cars)GameStorage.Instance.carIndex && followCamera) //if it's the player car
             {
                 FollowCamera script = followCamera.GetComponent<FollowCamera>();
-                Debug.Log(other.transform.name);
                 script.target = other.transform;
                 script.timeToFollow = timeToFollow;
                 followCamera.camera.enabled = true;
