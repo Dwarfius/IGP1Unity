@@ -30,6 +30,7 @@ public class SteeringAI : Car
         base.Start();
         projectedSegm = WaypointManager.Instance.GetSegment(currentWaypoint);
         StartCoroutine(WrongWayCoroutine());
+        StartCoroutine(StuckCoroutine());
     }
 
     public override void Update()
@@ -125,33 +126,7 @@ public class SteeringAI : Car
     void OnCollisionEnter(Collision other)
     {
         if (other.gameObject.tag == "Wall")
-        {
-            foreach (ContactPoint p in other.contacts)
-                Debug.DrawLine(p.point, p.point + p.normal, Color.red, 3);
-
             timer = timerConst;
-        }
-    }
-
-    float t;
-    IEnumerator WrongWayCoroutine()
-    {
-        while (true)
-        {
-            if (timer <= 0 && Mathf.Abs(transform.forward.z - projectedSegm.ForwardNormal.z) > 1) //if going the other direction
-            {
-                t += Time.fixedDeltaTime;
-                if (t >= timerConst)
-                {
-                    t = 0;
-                    rigidbody.velocity = Vector3.zero;
-                    rigidbody.angularVelocity = Vector3.zero;
-                    transform.position = projectedSegm.aTrans.position + Vector3.up;
-                    transform.LookAt(projectedSegm.bTrans);
-                }
-            }
-            yield return new WaitForFixedUpdate();
-        }
     }
 
     void DrawMinimap()
@@ -165,5 +140,45 @@ public class SteeringAI : Car
         Vector2 minimapPos = Vector2.Scale(relativePos, minimapSize); //[0..minimapSize]
         Vector2 charSize = Vector2.Scale(new Vector2(minimapChar.width, minimapChar.height), charScale);
         GUI.DrawTexture(new Rect(minimapPos.x - charSize.x / 2, Screen.height - minimapPos.y - charSize.y / 2, charSize.x, charSize.y), minimapChar);
+    }
+
+    float t;
+    IEnumerator WrongWayCoroutine()
+    {
+        while (true)
+        {
+            if (timer <= 0 && Mathf.Abs(transform.forward.z - projectedSegm.ForwardNormal.z) > 1) //if going the other direction
+            {
+                t += Time.fixedDeltaTime;
+                if (t >= timerConst)
+                {
+                    t = 0;
+                    ResetCar();
+                }
+            }
+            yield return new WaitForFixedUpdate();
+        }
+    }
+
+    Vector3 prevPos = Vector3.zero;
+    IEnumerator StuckCoroutine()
+    {
+        yield return new WaitForSeconds(4);
+        while (true)
+        {
+            float distance = (transform.position - prevPos).magnitude;
+            if (distance < 1)
+                ResetCar();
+            prevPos = transform.position;
+            yield return new WaitForSeconds(1);
+        }
+    }
+
+    void ResetCar()
+    {
+        rigidbody.velocity = Vector3.zero;
+        rigidbody.angularVelocity = Vector3.zero;
+        transform.position = projectedSegm.aTrans.position + Vector3.up;
+        transform.LookAt(projectedSegm.bTrans);
     }
 }
