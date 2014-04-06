@@ -10,10 +10,11 @@ public class PickUp : MonoBehaviour
     {
         if (other.tag == "Car")
         {
-            if (Random.value < ticketChance)
+            Car car = other.GetComponent<Car>();
+            if (car.car == (Cars)GameStorage.Instance.carIndex && Random.value < ticketChance) //if player car
                 GameStorage.Instance.ticketFound = true;
             else
-                other.GetComponent<Car>().hasPowerup = true;
+                car.hasPowerup = true;
             Utilities.EnableRenders(gameObject, false);
             collider.enabled = false;
             StartCoroutine(Reactivate());
