@@ -15,7 +15,7 @@ ModelImporter:
     materialName: 0
     materialSearch: 1
   animations:
-    generateAnimations: 3
+    generateAnimations: 0
     bakeSimulation: 0
     splitAnimations: 1
     animationCompression: 1
@@ -396,8 +396,11 @@ ModelImporter:
         first: 4
         second: 881a0600
       data:
-        first: 137
-        second: a20bd100
+        first: 23
+        second: 64182300
+      data:
+        first: 33
+        second: a45a3200
     Cylinder003:
       data:
         first: 1
@@ -406,8 +409,11 @@ ModelImporter:
         first: 4
         second: bc1a0600
       data:
-        first: 137
-        second: a80bd100
+        first: 23
+        second: 66182300
+      data:
+        first: 33
+        second: a65a3200
     Cylinder004:
       data:
         first: 1
@@ -416,8 +422,11 @@ ModelImporter:
         first: 4
         second: b21a0600
       data:
-        first: 137
-        second: a40bd100
+        first: 23
+        second: 68182300
+      data:
+        first: 33
+        second: a85a3200
     Group833:
       data:
         first: 1
@@ -461,8 +470,11 @@ ModelImporter:
         first: 4
         second: ba1a0600
       data:
-        first: 137
-        second: a60bd100
+        first: 23
+        second: 6c182300
+      data:
+        first: 33
+        second: ac5a3200
     Sphere002:
       data:
         first: 1
@@ -471,8 +483,11 @@ ModelImporter:
         first: 4
         second: 841a0600
       data:
-        first: 137
-        second: a00bd100
+        first: 23
+        second: 6a182300
+      data:
+        first: 33
+        second: aa5a3200
     'frenchman ':
       data:
         first: 1
