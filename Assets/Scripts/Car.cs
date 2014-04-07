@@ -523,7 +523,7 @@ public class Car : MonoBehaviour
             if(pickup)
                 GUI.DrawTexture(new Rect(Screen.width / 2 - size.x, 0, size.x, size.y), pickup);
             else
-                GUI.Box(new Rect(Screen.width / 2 - size.x, 0, size.x, size.y), "Powerup (" + CInput.GetKeyRepresentation("Use Item") + ")");
+                GUI.Box(new Rect(Screen.width / 2 - size.x, 0, size.x, size.y), "Powerup\n(" + CInput.GetKeyRepresentation("Use Item") + ")");
         }
         if (GameStorage.Instance.ticketFound)
             GUI.DrawTexture(new Rect(Screen.width / 2, 0, size.x, size.y), GameStorage.Instance.ticket);
