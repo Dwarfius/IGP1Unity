@@ -15,7 +15,7 @@ public class FollowCamera : MonoBehaviour
             if (timeToFollow <= 0)
             {
                 camera.enabled = false;
-                target.GetComponentInChildren<Camera>().enabled = true;
+                CarFollowCamera.instance.camera.enabled = true;
                 target = null;
             }
         }

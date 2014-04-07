@@ -15,7 +15,7 @@ public class Mop : MonoBehaviour
 
     void Update()
     {
-        transform.position = followT.position + followT.forward * 2 + followT.right * 3;
+        transform.position = followT.position + followT.forward * 2 + followT.right * 3 + followT.up;
 
         if (transform.eulerAngles.z < 180 - angle || transform.eulerAngles.z > 180 + angle)
             sign *= -1;

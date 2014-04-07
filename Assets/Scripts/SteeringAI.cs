@@ -115,10 +115,7 @@ public class SteeringAI : Car
                 RaycastHit hit;
                 Ray ray = new Ray(transform.position, transform.forward);
                 if (Physics.SphereCast(ray, 3, out hit, 40, 1 << LayerMask.NameToLayer("Cars")))
-                {
                     UsePowerUp();
-                    Debug.Log(hit.collider.gameObject.name);
-                }
             }
         }
     }

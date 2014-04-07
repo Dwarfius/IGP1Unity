@@ -51,6 +51,7 @@ public class GameStorage : MonoBehaviour
 
     float circleDist;
     Texture2D red, yellow, green, background;
+    GameObject cameraPrefab;
 
     public void Init()
     {
@@ -60,6 +61,7 @@ public class GameStorage : MonoBehaviour
         background = (Texture2D)Resources.Load("Textures/light background");
         ticket = (Texture2D)Resources.Load("Textures/ticketcollected");
         ticketAmount = PlayerPrefs.GetInt("Tickets");
+        cameraPrefab = (GameObject)Resources.Load("Prefabs/Camera");
     }
 
     void OnLevelWasLoaded(int level)
@@ -100,7 +102,6 @@ public class GameStorage : MonoBehaviour
                 Car carScript = car.GetComponent<Car>();
                 cars[i].carScript = car.AddComponent<SteeringAI>();
                 (cars[i].carScript as SteeringAI).InitWithCarScript(carScript);
-                cars[i].carScript.GetComponentInChildren<Camera>().enabled = false;
                 Destroy(carScript);
 
                 cars[i].carName = (Cars)type;
@@ -115,6 +116,10 @@ public class GameStorage : MonoBehaviour
             cars[5].carName = (Cars)carIndex;
 
             playerCar.name = cars[5].carName.ToString() + " - Player";
+
+            GameObject cam = (GameObject)Instantiate(cameraPrefab, playerCar.transform.position - playerCar.transform.forward, Quaternion.identity);
+            cam.GetComponent<CarFollowCamera>().target = playerCar.transform;
+            cam.transform.LookAt(playerCar.transform);
 
             StartCoroutine(StartCounter());
 

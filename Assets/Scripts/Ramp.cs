@@ -38,7 +38,7 @@ public class Ramp : MonoBehaviour
                 script.target = other.transform;
                 script.timeToFollow = timeToFollow;
                 followCamera.camera.enabled = true;
-                other.GetComponentInChildren<Camera>().enabled = false;
+                CarFollowCamera.instance.camera.enabled = false;
             }
         }
     }

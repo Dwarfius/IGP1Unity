@@ -594,12 +594,6 @@ public class Car : MonoBehaviour
         return (f < 0 ? -1 : (f > 0 ? 1 : 0));
     }
 
-    IEnumerator PerformAction(float t, System.Action act)
-    {
-        yield return new WaitForSeconds(t);
-        act();
-    }
-
     public void BuffTopSpeed(float rate, float time)
     {
         topSpeed *= rate;
@@ -627,5 +621,16 @@ public class Car : MonoBehaviour
             
             yield return new WaitForSeconds(rate);
         }
+    }
+
+    void PerformAction(float t, System.Action act)
+    {
+        StartCoroutine(ActionCoroutine(t, act));
+    }
+
+    IEnumerator ActionCoroutine(float t, System.Action act)
+    {
+        yield return new WaitForSeconds(t);
+        act();
     }
 }
