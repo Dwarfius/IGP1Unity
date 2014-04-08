@@ -6,15 +6,26 @@ public class WaypointManager : MonoBehaviour
     static WaypointManager instance;
 
     public Transform[] waypoints;
+    public Line[] segments;
 
     public static WaypointManager Instance 
     { 
         get 
         {
             if (!instance)
+            {
                 instance = GameObject.FindGameObjectWithTag("WaypointRoot").GetComponent<WaypointManager>();
+                instance.Init();
+            }
             return instance; 
         }
+    }
+
+    public void Init()
+    {
+        segments = new Line[waypoints.Length];
+        for (int i = 0; i < waypoints.Length; i++ )
+            segments[i] = new Line(waypoints[i], (i + 1 == waypoints.Length ? waypoints[0] : waypoints[i + 1]));
     }
 
     void OnDrawGizmos()
@@ -42,7 +53,7 @@ public class WaypointManager : MonoBehaviour
 
     public Line GetSegment(int segmNum)
     {
-        return new Line(waypoints[segmNum], (segmNum + 1 == waypoints.Length ? waypoints[0] : waypoints[segmNum + 1]));
+        return segments[segmNum];
     }
 
     public void CastToGround()

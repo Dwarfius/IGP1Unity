@@ -5,6 +5,20 @@ public class PickUp : MonoBehaviour
 {
     public float ticketChance = 0.05f;
     public float resetTime = 5f;
+    public float heightChange, heightChangeSpeed, rotation;
+
+    Vector3 startPos;
+
+    void Start()
+    {
+        startPos = transform.position;
+    }
+
+    void Update()
+    {
+        transform.position = startPos + Vector3.up * heightChange * Mathf.Sin(Time.time * heightChangeSpeed);
+        transform.Rotate(Vector3.up, rotation * Time.deltaTime, Space.World);
+    }
 
     void OnTriggerEnter(Collider other)
     {

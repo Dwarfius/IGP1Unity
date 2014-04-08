@@ -37,7 +37,7 @@ public class Car : MonoBehaviour
     bool handbrake, canDrive, canSteer;
     bool inMenu;
     int currentGear;
-    Texture2D blackText, gauge, arrow;
+    Texture2D blackText, gauge, arrow, compass;
     Line currentSegm = null;
     
     protected Vector2 minimapStartOffset, trackSize;
@@ -54,6 +54,7 @@ public class Car : MonoBehaviour
         minimap = (Texture2D)Resources.Load("Textures/minimap");
         gauge = (Texture2D)Resources.Load("Textures/speedometer");
         arrow = (Texture2D)Resources.Load("Textures/arrow");
+        compass = (Texture2D)Resources.Load("Textures/compass");
 
         minimapChar = Utilities.GetMinimapTexture(car);
         blackText = new Texture2D(1, 1);
@@ -119,6 +120,7 @@ public class Car : MonoBehaviour
             DrawMinimap();
             DrawSpeedometer();
             DrawPickups();
+            DrawArrow();
             if (GameStorage.Instance != null && GameStorage.Instance.cars != null)
                 DrawLeaderboard();
         }
@@ -504,11 +506,11 @@ public class Car : MonoBehaviour
 
     void DrawSpeedometer()
     {
-        Matrix4x4 backupMatrix = GUI.matrix;
         Vector2 gaugeSize = Vector2.Scale(new Vector2(gauge.width, gauge.height), gaugeScale);
         GUI.DrawTexture(new Rect(Screen.width - gaugeSize.x, Screen.height - gaugeSize.y, gaugeSize.x, gaugeSize.y), gauge);
         Vector2 arrowSize = Vector2.Scale(new Vector2(arrow.width, arrow.height), arrowScale);
         Vector2 arrowPos = new Vector2(Screen.width - gaugeSize.x / 2, Screen.height - gaugeSize.y / 2);
+        Matrix4x4 backupMatrix = GUI.matrix;
         GUIUtility.RotateAroundPivot(-gaugeAngleOffset + rigidbody.velocity.magnitude / topSpeed * (180 + gaugeAngleOffset), arrowPos);
         GUI.DrawTexture(new Rect(arrowPos.x - arrowSize.x/2, arrowPos.y - arrowSize.y/2, arrowSize.x, arrowSize.y), arrow);
         GUI.matrix = backupMatrix;
@@ -585,6 +587,21 @@ public class Car : MonoBehaviour
 
         if (GUI.Button(new Rect(boxRect.xMax - (width + empty) * 2, boxRect.yMax - height - empty, width, height), "Retry"))
             GameStorage.Instance.Retry();
+    }
+
+    void DrawArrow()
+    {
+        float xOffset = Screen.width / 2, yOffset = Screen.height / 8;
+        float sizeScale = 0.2f;
+        Vector2 size = new Vector2(compass.width, compass.height) * sizeScale;
+        Rect rect = new Rect(xOffset - size.x / 2, yOffset - size.y / 2, size.x, size.y);
+        Line nextSegm = WaypointManager.Instance.GetSegment((currentWaypoint+1 == WaypointManager.Instance.waypoints.Length) ? 0 : currentWaypoint + 1);
+        Vector3 targetHeading = nextSegm.bTrans.position - transform.position;
+        float angle = Vector3.Angle(targetHeading, transform.forward);
+        Matrix4x4 backupMatrix = GUI.matrix;
+        GUIUtility.RotateAroundPivot(angle * Mathf.Sign(Vector3.Dot(targetHeading, transform.right)) - 90, rect.center);
+        GUI.DrawTexture(rect, compass);
+        GUI.matrix = backupMatrix;
     }
 
     //===========================================================================
