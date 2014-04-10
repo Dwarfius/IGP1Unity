@@ -17,7 +17,6 @@ public class Car : MonoBehaviour
 
     public Cars car;
     public GameObject powerupPrefab;
-    public Texture2D pickup;
     public Transform[] frontWheels, backWheels;
     public float slipValue = 300, stiffnesCoeff = 0.6f;
     public int gears = 5;
@@ -37,7 +36,7 @@ public class Car : MonoBehaviour
     bool handbrake, canDrive, canSteer;
     bool inMenu;
     int currentGear;
-    Texture2D blackText, gauge, arrow, compass;
+    Texture2D blackText, gauge, arrow, compass, pickup;
     Line currentSegm = null;
     
     protected Vector2 minimapStartOffset, trackSize;
@@ -55,6 +54,7 @@ public class Car : MonoBehaviour
         gauge = (Texture2D)Resources.Load("Textures/speedometer");
         arrow = (Texture2D)Resources.Load("Textures/arrow");
         compass = (Texture2D)Resources.Load("Textures/compass");
+        pickup = (Texture2D)Resources.Load("Textures/PickUp");
 
         minimapChar = Utilities.GetMinimapTexture(car);
         blackText = new Texture2D(1, 1);
@@ -518,12 +518,17 @@ public class Car : MonoBehaviour
 
     void DrawPickups()
     {
-        float scaleCoeff = 0.05f;
+        float scaleCoeff = 0.1f;
         Vector2 size = new Vector2(Screen.width * scaleCoeff, Screen.width * scaleCoeff);
         if (hasPowerup)
         {
-            if(pickup)
+            if (pickup)
+            {
                 GUI.DrawTexture(new Rect(Screen.width / 2 - size.x, 0, size.x, size.y), pickup);
+                string s = CInput.GetKeyRepresentation("Use Item").ToString();
+                Vector2 textSize = GUI.skin.label.CalcSize(new GUIContent(s));
+                GUI.Label(new Rect(Screen.width / 2 - size.x /2 - textSize.x, size.y, textSize.x * 2, textSize.y * 2), s);
+            }
             else
                 GUI.Box(new Rect(Screen.width / 2 - size.x, 0, size.x, size.y), "Powerup\n(" + CInput.GetKeyRepresentation("Use Item") + ")");
         }
@@ -591,9 +596,10 @@ public class Car : MonoBehaviour
 
     void DrawArrow()
     {
-        float xOffset = Screen.width / 2, yOffset = Screen.height / 8;
         float sizeScale = 0.2f;
         Vector2 size = new Vector2(compass.width, compass.height) * sizeScale;
+        Vector2 minimapSize = Vector2.Scale(new Vector2(minimap.width, minimap.height), minimapScale);
+        float xOffset = size.x, yOffset = Screen.height - minimapSize.y - size.y;
         Rect rect = new Rect(xOffset - size.x / 2, yOffset - size.y / 2, size.x, size.y);
         Line nextSegm = WaypointManager.Instance.GetSegment((currentWaypoint+1 == WaypointManager.Instance.waypoints.Length) ? 0 : currentWaypoint + 1);
         Vector3 targetHeading = nextSegm.bTrans.position - transform.position;
