@@ -13,7 +13,7 @@ public class MainMenu : MonoBehaviour
         [HideInInspector] public int pos;
     }
     #endregion
-    public enum State { MainMenu, Options, KartSelect, Ticket }
+    public enum State { MainMenu, Options, KartSelect, Ticket, Instructions }
 
     public Vector3 btnSize; //z contains the empty space
     public Vector2 btnCenterOffset;
@@ -108,6 +108,8 @@ public class MainMenu : MonoBehaviour
             DrawKartSelect();
         else if (state == State.Ticket)
             DrawTicketScreen();
+        else if (state == State.Instructions)
+            DrawInstructions();
     }
 
     void DrawMenu()
@@ -119,6 +121,10 @@ public class MainMenu : MonoBehaviour
             foreach (CarStorage carStorage in cars)
                 Utilities.EnableRenders(carStorage.carDriverPair.gameObject, true);
         }
+
+        y += btnSize.y + btnSize.z;
+        if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Instrctions"))
+            state = State.Instructions;
 
         y += btnSize.y + btnSize.z;
         if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Options"))
@@ -195,7 +201,8 @@ public class MainMenu : MonoBehaviour
         }
 
         y += btnSize.y + btnSize.z;
-        GUI.Box(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Car: " + cars[selectedCar].name);
+        string difficulty = (selectedCar == 1 || selectedCar == 3) ? "Hard" : (selectedCar == 4 || selectedCar == 5) ? "Medium" : "Easy"; 
+        GUI.Box(new Rect(x - btnSize.x * 1.5f / 2, y, btnSize.x * 1.5f, btnSize.y * 2), "Car: " + cars[selectedCar].name + "\nDifficulty: " + difficulty);
     }
 
     void DrawTicketScreen()
@@ -210,6 +217,28 @@ public class MainMenu : MonoBehaviour
                                      progressBar,
                                      new Rect(0, 0, percent, 1));
         if (GUI.Button(new Rect(Screen.width / 2 - btnSize.x / 2, imgRect.yMax + btnSize.z, btnSize.x, btnSize.y), "Menu"))
+            state = State.MainMenu;
+    }
+
+    void DrawInstructions()
+    {
+        string header = "Welcome to Serpent Cinema Racing Game!";
+        string text = "This is a simple car racing game, where the goal is to reach finish first, after completing 3 laps. The controls are simple:\n" +
+                      "WSAD for driving, Space for using a powerup, R for resetting back to last checkpoint (if you are stuck or something else happens)\n" + 
+                      "Escape for pause. All the hotkeys can be changes inside the Options menu. During the race, you can pick up a Power up, which looks\n" +
+                      "lika a floating Gift. Those usually contain a character-specific powerup, which can be used, but it also can contain a Golden Ticket.\n" +
+                      "Golden Tickets are used to provide a discount in our Serpent Cinema, the more you collect, the bigger the discount (maximum is 20%),\n" +
+                      "but there is a catch - the ticket will count if you finish first with it. That's it, this is the entire game, now you're ready to start\n" +
+                      "racing!";
+        Vector2 headerSize = GUI.skin.label.CalcSize(new GUIContent(header)) * 1.5f;
+        Vector2 textSize = GUI.skin.label.CalcSize(new GUIContent(text)) * 1.2f;
+        float boxWidth = textSize.x + btnSize.z * 2;
+        float boxHeight = headerSize.y + textSize.y + btnSize.y + btnSize.z * 4;
+        Rect boxRect = new Rect(Screen.width / 2 - boxWidth / 2, Screen.height / 2 - boxHeight / 2, boxWidth, boxHeight);
+        //GUI.Box(boxRect, "");
+        GUI.Label(new Rect(boxRect.center.x - headerSize.x / 2, boxRect.yMin + btnSize.z, headerSize.x, headerSize.y), header);
+        GUI.Label(new Rect(boxRect.xMin + btnSize.z, boxRect.yMin + btnSize.z * 2 + headerSize.y, textSize.x, textSize.y), text);
+        if (GUI.Button(new Rect(boxRect.xMax - btnSize.x - btnSize.z, boxRect.yMax - btnSize.y - btnSize.z, btnSize.x, btnSize.y), "Back"))
             state = State.MainMenu;
     }
 

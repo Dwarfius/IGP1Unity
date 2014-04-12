@@ -280,9 +280,9 @@ public class Car : MonoBehaviour
         }
         else //car == Cars.Popcorn
         {
-            Instantiate(powerupPrefab, transform.position + transform.forward, transform.rotation);
-            Instantiate(powerupPrefab, transform.position + transform.forward - transform.right * 4, transform.rotation);
-            Instantiate(powerupPrefab, transform.position + transform.forward + transform.right * 4, transform.rotation);
+            Instantiate(powerupPrefab, transform.position + transform.forward * 2, transform.rotation);
+            Instantiate(powerupPrefab, transform.position + transform.forward * 2 - transform.right * 4, transform.rotation);
+            Instantiate(powerupPrefab, transform.position + transform.forward * 2 + transform.right * 4, transform.rotation);
         }
         hasPowerup = false;
     }
