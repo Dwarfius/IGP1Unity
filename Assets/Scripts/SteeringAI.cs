@@ -3,10 +3,8 @@ using System.Collections;
 
 public class SteeringAI : Car 
 {
-    const float timerConst = 1.25f;
+    const float timerConst = 2f;
     float timer;
-    int projectedWaypoint;
-    Line projectedSegm;
 
     public void InitWithCarScript(Car script)
     {
@@ -28,7 +26,6 @@ public class SteeringAI : Car
     public override void Start()
     {
         base.Start();
-        projectedSegm = WaypointManager.Instance.GetSegment(currentWaypoint);
         StartCoroutine(WrongWayCoroutine());
         StartCoroutine(StuckCoroutine());
     }
@@ -50,15 +47,22 @@ public class SteeringAI : Car
     //===========================================================================
     void MakeDecision()
     {
+        int projectedWaypoint = currentWaypoint;
+        Line projectedSegm = WaypointManager.Instance.GetSegment(projectedWaypoint);
+        bool inSegm = false;
+        Vector2 newPoint;
         Vector3 projectedPos = transform.position + rigidbody.velocity.magnitude * transform.forward;
-        bool inSegm;
-        Vector2 newPoint = projectedSegm.MapPointOnLine(projectedPos.ToV2(), out inSegm);
-        if (!inSegm)
+
+        while(true) //searching for the actual segment, starting from the current one
         {
-            if (++projectedWaypoint == WaypointManager.Instance.waypoints.Length)
-                projectedWaypoint = 0;
-            projectedSegm = WaypointManager.Instance.GetSegment(projectedWaypoint);
             newPoint = projectedSegm.MapPointOnLine(projectedPos.ToV2(), out inSegm);
+            if (!inSegm)
+            {
+                if (++projectedWaypoint == WaypointManager.Instance.waypoints.Length)
+                    projectedWaypoint = 0;
+                projectedSegm = WaypointManager.Instance.GetSegment(projectedWaypoint);
+            }
+            else break;
         }
 
         float rad = projectedSegm.GetRadiusForMappedPoint(newPoint);
@@ -144,7 +148,7 @@ public class SteeringAI : Car
     {
         while (true)
         {
-            if (timer <= 0 && Mathf.Abs(transform.forward.z - projectedSegm.ForwardNormal.z) > 1) //if going the other direction
+            if (timer <= 0 && Mathf.Abs(transform.forward.z - currentSegm.ForwardNormal.z) > 1) //if going the other direction
             {
                 t += Time.fixedDeltaTime;
                 if (t >= timerConst)
@@ -169,13 +173,5 @@ public class SteeringAI : Car
             prevPos = transform.position;
             yield return new WaitForSeconds(1);
         }
-    }
-
-    void ResetCar()
-    {
-        rigidbody.velocity = Vector3.zero;
-        rigidbody.angularVelocity = Vector3.zero;
-        transform.position = projectedSegm.aTrans.position + Vector3.up;
-        transform.LookAt(projectedSegm.bTrans);
     }
 }

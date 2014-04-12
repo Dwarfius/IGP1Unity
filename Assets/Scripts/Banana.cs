@@ -12,7 +12,7 @@ public class Banana : MonoBehaviour
 
 	void Update () 
     {
-        transform.position += heading * 100 * Time.deltaTime;
+        transform.position += heading * 200 * Time.deltaTime;
         transform.RotateAround(transform.right, 30 * Time.deltaTime);
 	}
 

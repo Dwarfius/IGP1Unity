@@ -32,10 +32,16 @@ public class WaypointManager : MonoBehaviour
     {
         for (int i = 0; i < waypoints.Length; i++)
         {
+            Transform a = waypoints[i];
+            Transform b = (i == waypoints.Length - 1) ? waypoints[0] : waypoints[i + 1];
             Gizmos.color = (i == 0 ? Color.magenta : Color.red);
-            Gizmos.DrawCube(waypoints[i].position, Vector3.one);
+            Gizmos.DrawCube(a.position, Vector3.one);
             Gizmos.color = Color.blue;
-            Gizmos.DrawLine(waypoints[i].position, (i == waypoints.Length - 1 ? waypoints[0].position : waypoints[i+1].position));
+            Gizmos.DrawLine(a.position, b.position);
+            Gizmos.color = Color.green;
+            Vector3 offsetA = a.right * a.GetComponent<Waypoint>().radius, offsetB = b.right * b.GetComponent<Waypoint>().radius; //slightly inefective, but oh well
+            Gizmos.DrawLine(a.position + offsetA, b.position + offsetB);
+            Gizmos.DrawLine(a.position - offsetA, b.position - offsetB);
         }
     }
 

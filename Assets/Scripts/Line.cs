@@ -5,7 +5,7 @@ public class Line
 {
     public Vector2 A, B;
     public Transform aTrans, bTrans;
-    float r1, r2;
+    public float r1, r2;
     float k, c;
 
     public Vector3 ForwardNormal { get { return (bTrans.position - aTrans.position).normalized; } }

@@ -34,6 +34,7 @@ public class GameStorage : MonoBehaviour
         public float distance;
         public Cars carName;
         public Car carScript;
+        public bool passedJump;
     }
     #endregion
 
@@ -62,6 +63,11 @@ public class GameStorage : MonoBehaviour
         ticket = (Texture2D)Resources.Load("Textures/ticketcollected");
         ticketAmount = PlayerPrefs.GetInt("Tickets");
         cameraPrefab = (GameObject)Resources.Load("Prefabs/Camera");
+
+        AudioSource audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.clip = (AudioClip)Resources.Load("Music/Dandy");
+        audioSource.loop = true;
+        audioSource.Play();
     }
 
     void OnLevelWasLoaded(int level)
@@ -123,11 +129,21 @@ public class GameStorage : MonoBehaviour
 
             StartCoroutine(StartCounter());
 
+            //music
+            audio.Stop();
+            audio.clip = (AudioClip)Resources.Load("Music/Dandy");
+            audio.Play();
+
             //marking to follow stats
             canUpdate = true;
         }
         else
         {
+            //music
+            audio.Stop();
+            audio.clip = (AudioClip)Resources.Load("Music/Dandy");
+            audio.Play();
+
             canUpdate = false;
             if (level == 0)
                 Camera.main.gameObject.GetComponent<MainMenu>().state = MainMenu.State.Ticket;
@@ -205,12 +221,20 @@ public class GameStorage : MonoBehaviour
     {
         for (int i = 0; i < cars.Length; i++)
         {
-            if (cars[i].carName == carType && ++cars[i].lap >= lapsToFinish)
+            if (cars[i].carName == carType && cars[i].passedJump && ++cars[i].lap >= lapsToFinish)
             {
+                cars[i].passedJump = false;
                 cars[i].carScript.finished = true;
                 cars[i].time = Time.timeSinceLevelLoad - cars[i].time;
             }
         }
+    }
+
+    public void MarkJumpPassed(Cars carType)
+    {
+        for (int i = 0; i < cars.Length; i++)
+            if (cars[i].carName == carType)
+                cars[i].passedJump = true;
     }
 
     public bool IsFirst(Cars carType)

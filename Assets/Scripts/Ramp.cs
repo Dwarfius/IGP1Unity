@@ -4,17 +4,9 @@ using System.Collections;
 public class Ramp : MonoBehaviour 
 {
     public float targetVel;
-    public Vector3 targetPos;
     public float radius;
     public GameObject followCamera;
     public float timeToFollow;
-
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.cyan;
-        Vector3 newPos = transform.TransformPoint(targetPos);
-        Gizmos.DrawLine(newPos + transform.right * radius, newPos - transform.right * radius);
-    }
 
     void OnTriggerEnter(Collider other)
     {
@@ -32,7 +24,9 @@ public class Ramp : MonoBehaviour
         if (other.tag == "Car")
         {
             other.rigidbody.constraints = RigidbodyConstraints.None;
-            if (other.GetComponent<Car>().car == (Cars)GameStorage.Instance.carIndex && followCamera) //if it's the player car
+            Car car = other.GetComponent<Car>();
+            GameStorage.Instance.MarkJumpPassed(car.car);
+            if (car.car == (Cars)GameStorage.Instance.carIndex && followCamera) //if it's the player car
             {
                 FollowCamera script = followCamera.GetComponent<FollowCamera>();
                 script.target = other.transform;

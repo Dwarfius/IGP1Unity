@@ -37,8 +37,8 @@ public class Car : MonoBehaviour
     bool inMenu;
     int currentGear;
     Texture2D blackText, gauge, arrow, compass, pickup;
-    Line currentSegm = null;
     
+    protected Line currentSegm = null;
     protected Vector2 minimapStartOffset, trackSize;
     protected float currentEnginePower, throttle;
     protected float handbrakeTime, steer, initialDragMultiplierX, resetTimer;
@@ -227,6 +227,14 @@ public class Car : MonoBehaviour
     //Update functions
     void GetInput()
     {
+        if (CInput.GetKeyDown("Reset"))
+        {
+            rigidbody.velocity = Vector3.zero;
+            rigidbody.angularVelocity = Vector3.zero;
+            transform.position = currentSegm.aTrans.position;
+            transform.LookAt(currentSegm.bTrans);
+        }
+
         if(CInput.GetKeyDown("Pause"))
         {
             inMenu = !inMenu;
@@ -404,7 +412,7 @@ public class Car : MonoBehaviour
         sidewaysCurve.extremumValue = forwardCurve.extremumValue = slipValue - slipValue * 0.9f * coeff;
         sidewaysCurve.asymptoteValue = forwardCurve.asymptoteValue = slipValue/2 - slipValue * 0.45f * coeff;
 
-        sidewaysCurve.stiffness = 1 - stiffnesCoeff * relativeVel.magnitude / topSpeed; //it's kind of cheating, but f it :D
+        sidewaysCurve.stiffness = 1 - stiffnesCoeff * relativeVel.magnitude / topSpeed; //it's kind of cheating, but screw it :D
 
         foreach (Wheel wheel in wheels)
         {
@@ -488,8 +496,17 @@ public class Car : MonoBehaviour
     void DrawMenu()
     {
         GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), blackText);
+        
         float x = Screen.width / 2, y = Screen.height / 2;
-        float width = 125, height = 30, empty = 15;
+        float width = Screen.width / 10, height = Screen.height / 20, empty = 15;
+
+        if (GUI.Button(new Rect(x - width / 2, y, width, height), "Restart"))
+        {
+            Time.timeScale = 1;
+            Application.LoadLevel(1);
+        }
+
+        y += height + empty;
         if (GUI.Button(new Rect(x - width / 2, y, width, height), "Main Menu"))
         {
             Time.timeScale = 1;
@@ -526,8 +543,8 @@ public class Car : MonoBehaviour
             {
                 GUI.DrawTexture(new Rect(Screen.width / 2 - size.x, 0, size.x, size.y), pickup);
                 string s = CInput.GetKeyRepresentation("Use Item").ToString();
-                Vector2 textSize = GUI.skin.label.CalcSize(new GUIContent(s));
-                GUI.Label(new Rect(Screen.width / 2 - size.x /2 - textSize.x, size.y, textSize.x * 2, textSize.y * 2), s);
+                Vector2 textSize = GUI.skin.label.CalcSize(new GUIContent(s)) + Vector2.one * 20;
+                GUI.Label(new Rect(Screen.width / 2 - size.x /2 - textSize.x, size.y, textSize.x, textSize.y), s);
             }
             else
                 GUI.Box(new Rect(Screen.width / 2 - size.x, 0, size.x, size.y), "Powerup\n(" + CInput.GetKeyRepresentation("Use Item") + ")");
@@ -628,7 +645,7 @@ public class Car : MonoBehaviour
     {
         for (int i = 0; i < amount; i++)
         {
-            ((GameObject)Instantiate(item, transform.position + transform.forward, transform.rotation)).GetComponent<Banana>().heading = transform.forward;
+            ((GameObject)Instantiate(item, transform.position + transform.forward*2, transform.rotation)).GetComponent<Banana>().heading = transform.forward;
             yield return new WaitForSeconds(rate);
         }
     }
@@ -655,5 +672,19 @@ public class Car : MonoBehaviour
     {
         yield return new WaitForSeconds(t);
         act();
+    }
+
+    public void ResetCar()
+    {
+        rigidbody.velocity = Vector3.zero;
+        rigidbody.angularVelocity = Vector3.zero;
+        transform.position = currentSegm.aTrans.position + Vector3.up;
+        transform.LookAt(currentSegm.bTrans);
+    }
+
+    public void SetWaypoint(int wp)
+    {
+        currentWaypoint = wp;
+        currentSegm = WaypointManager.Instance.GetSegment(currentWaypoint);
     }
 }
