@@ -5,7 +5,7 @@ using System.Collections;
 public class Car : MonoBehaviour 
 {
     WheelFrictionCurve forwardCurve, sidewaysCurve;
-    public static Vector2 minimapScale = new Vector2(0.4f, 0.4f);
+    public static Vector2 minimapScale = new Vector2(0.2f, 0.2f);
 
     public class Wheel
     {

@@ -123,7 +123,7 @@ public class MainMenu : MonoBehaviour
         }
 
         y += btnSize.y + btnSize.z;
-        if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Instrctions"))
+        if (GUI.Button(new Rect(x - btnSize.x / 2, y, btnSize.x, btnSize.y), "Instructions"))
             state = State.Instructions;
 
         y += btnSize.y + btnSize.z;
@@ -138,24 +138,32 @@ public class MainMenu : MonoBehaviour
     void DrawOptions()
     {
         float x = Screen.width / 5, y = Screen.height / 10;
-        GUI.Label(new Rect((Screen.width - btnSize.x) / 2, y, btnSize.x, btnSize.y), "Hotkeys");
+        GUI.Box(new Rect((Screen.width - btnSize.x) / 2, y, btnSize.x, btnSize.y), "Options");
+
+        y += btnSize.y + btnSize.z;
+        GUI.Box(new Rect(x, y, btnSize.x, btnSize.y), "Audio Volume");
+        GameStorage.Instance.audio.volume = GUI.HorizontalSlider(new Rect(4 * x - btnSize.x * 3, y + btnSize.y/3, btnSize.x * 1.5f, btnSize.y), GameStorage.Instance.audio.volume, 0, 1);
+        GUI.Box(new Rect(4 * x - btnSize.x /2, y, btnSize.x/2, btnSize.y), (int)(GameStorage.Instance.audio.volume * 100) + "%");
 
         y += btnSize.y + btnSize.z;
         foreach(KeyValuePair<string, KeyCode> pair in keyBinds)
         {
-            GUI.Label(new Rect(x, y, btnSize.x, btnSize.y), pair.Key);
+            GUI.Box(new Rect(x, y, btnSize.x, btnSize.y), pair.Key);
             string dispString = (string.IsNullOrEmpty(editingKey) || !editingKey.Equals(pair.Key) ? pair.Value.ToString() : "Press Any Key");
             if (GUI.Button(new Rect(4 * x - btnSize.x, y, btnSize.x, btnSize.y), dispString) && string.IsNullOrEmpty(editingKey))
                 editingKey = pair.Key;
             y += btnSize.y + btnSize.z;
         }
 
-        if (GUI.Button(new Rect((Screen.width - btnSize.x) / 2, y, btnSize.x, btnSize.y), "Reset"))
+        if (GUI.Button(new Rect((Screen.width - btnSize.x) / 2, y, btnSize.x, btnSize.y), "Reset Hotkeys"))
             CInput.Reset();
 
         y += btnSize.y + btnSize.z;
         if (GUI.Button(new Rect((Screen.width - btnSize.x) / 2, y, btnSize.x, btnSize.y), "Back"))
+        {
+            PlayerPrefs.SetFloat("Volume", GameStorage.Instance.audio.volume);
             state = State.MainMenu;
+        }
     }
 
     void DrawKartSelect()

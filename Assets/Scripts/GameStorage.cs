@@ -67,6 +67,8 @@ public class GameStorage : MonoBehaviour
         AudioSource audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.clip = (AudioClip)Resources.Load("Music/Dandy");
         audioSource.loop = true;
+        if(PlayerPrefs.HasKey("Volume"))
+            audioSource.volume = PlayerPrefs.GetFloat("Volume");
         audioSource.Play();
     }
 
@@ -131,7 +133,7 @@ public class GameStorage : MonoBehaviour
 
             //music
             audio.Stop();
-            audio.clip = (AudioClip)Resources.Load("Music/Dandy");
+            audio.clip = (AudioClip)Resources.Load("Music/Wheels of Steel [Re-Volt]");
             audio.Play();
 
             //marking to follow stats
