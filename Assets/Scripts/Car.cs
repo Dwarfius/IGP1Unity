@@ -655,7 +655,7 @@ public class Car : MonoBehaviour
         for (int i = 0; i < amount; i++)
         {
             RaycastHit hit;
-            Ray ray = new Ray(transform.position - transform.forward + transform.up, -transform.up);
+            Ray ray = new Ray(transform.position - transform.forward*2 + transform.up, -transform.up);
             if(Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << LayerMask.NameToLayer("Ground")))
                 Instantiate(item, hit.point + hit.normal / 5, transform.rotation);
             
