@@ -4,7 +4,6 @@ using System.Collections;
 public class Ramp : MonoBehaviour 
 {
     public float targetVel;
-    public float radius;
     public GameObject followCamera;
     public float timeToFollow;
 
