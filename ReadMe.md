@@ -5,6 +5,8 @@ A university project developed by a team of 6 1st-year students (1 programmer, 3
 
 The AI controlled cars are following a steering behavior algorithm, which utilizes "tunnel"-like information baked in to the level. If the car's future position (in 1 seconds time) is outside of the defined tunnel, it should start steering away from it. By tweaking the time offset, the steering strength and acceleration ratios, each race track can have its own specific AI players.
 
+Note: Windows build can be downloaded for quick testing.
+
 Credits:
 -------
 
